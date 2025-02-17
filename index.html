@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7조 페이지</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .team_intro {
+      height: 20vh;
+      border: 1px solid black;
+      padding: 5px;
+      margin-bottom: 30px;
+    }
+    .main {
+      border: 1px solid black;
+      padding: 5px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    .add_btn {
+      width: fit-content;
+      height: 30px;
+      border-radius: 8px;
+    }
+
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
+      authDomain: "lv7-introduction.firebaseapp.com",
+      projectId: "lv7-introduction",
+      storageBucket: "lv7-introduction.firebasestorage.app",
+      messagingSenderId: "722530554104",
+      appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+  </script>
+</head>
+<body class="bg-dark text-white">
+<div class="container py-5">
+  <h1 class="mb-4">7조 팀 소개</h1>
+
+  <div class="team_intro bg-light text-dark p-3 rounded">
+    <h2>팀 소개</h2>
+  </div>
+  <div class="team_intro bg-light text-dark p-3 rounded">
+    <h2>팀이 추구하는 목표</h2>
+  </div>
+
+  <div>
+    <p class="mt-4 fs-2">팀원 소개 <button class="fs-6 add_btn">추가</button></p>
+  </div>
+  <div class="main bg-light text-dark p-3 rounded d-flex">
+    <div class="member">
+      <h2 class="head">조원</h2>
+    </div>
+    <div class="member">
+      <h2 class="head">조원</h2>
+    </div>
+    <div class="member">
+      <h2 class="head">조원</h2>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
