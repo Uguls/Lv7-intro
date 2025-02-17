@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .main {
+            background-color: black;
+            color: white
+        }
+
+        .main>figure {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            margin: 50px auto 0px auto;
+        }
+
+        .name {
+            width: 100px;
+            font-size: 50px;
+        }
+
+        .inputgroup {
+            width: 100px;
+            height: 50px;
+
+            margin-left: 100px;
+            font-size: 20px;
+        }
+
+        .form-control {
+            width: 1000px;
+            height: auto;
+
+            background-color: transparent;
+            color: white;
+        }
+
+        
+        .comment {
+            margin: 500px auto 0px 100px;
+        }
+
+        .btn {
+            margin-top: 20px;
+            margin-left: 100px;
+        }
+
+        .btn>button {
+            margin-right: 3px;
+        }
+
+    </style>
+
+    <script>
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
+            authDomain: "lv7-introduction.firebaseapp.com",
+            projectId: "lv7-introduction",
+            storageBucket: "lv7-introduction.firebasestorage.app",
+            messagingSenderId: "722530554104",
+            appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+
+        let docs = await getDocs(collection(db, "members"));
+        docs.forEach((doc) => {
+            let row = doc.data();
+
+            let image = row['image'];
+            let name = row['name'];
+            let advantages = row['advantages'];
+            let blog = row['blog'];
+            let mbti = row['mbti'];
+            let style = row['style'];
+
+            let temp_html = `
+                <div class="inputgroup">
+                    <figure class="figure">
+                        <img src="${image}" class="figure-img img-fluid rounded" alt="...">
+                        <figcaption class="name">${name}</figcaption>
+                    </figure>
+                    <div class="row mb-3">
+                        <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
+                        <p type="advantages" class="form-control" id="advantages">${advantages}</p>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputgoods" class="col-sm-2 col-form-label">blog</label>
+                        <p type="blog" class="form-control" id="blog">${blog}</p>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputstyle" class="col-sm-2 col-form-label">MBTI</label>
+                        <p type="mbti" class="form-control" id="mbti">${mbti}</p>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
+                        <p type="style" class="form-control" id="style">${style}</p>
+                    </div>
+                </div>`;
+            $('#card').append(temp_html)
+        });
+
+
+    </script>
+</head>
+
+<body class="main">
+    <div class="inputgroup">
+        <figure class="figure">
+            <img src="..." class="figure-img img-fluid rounded" alt="...">
+            <figcaption class="name">이름</figcaption>
+        </figure>
+        <div class="row mb-3">
+            <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
+            <p type="advantages" class="form-control" id="advantages">...</p>
+        </div>
+        <div class="row mb-3">
+            <label for="inputgoods" class="col-sm-2 col-form-label">blog</label>
+            <p type="blog" class="form-control" id="blog">...</p>
+        </div>
+        <div class="row mb-3">
+            <label for="inputstyle" class="col-sm-2 col-form-label">MBTI</label>
+            <p type="mbti" class="form-control" id="mbti">...</p>
+        </div>
+        <div class="row mb-3">
+            <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
+            <p type="style" class="form-control" id="style">...</p>
+        </div>
+    </div>
+    
+    <div>
+        <textarea class="comment" placeholder="댓글 입력" id="floatingText"></textarea>
+    </div>
+    <div>
+        <button type="button" class="btn">수정</button>
+        <button type="button" class="btn">삭제</button>
+    </div>
+</body>
+
+</html>
