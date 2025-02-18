@@ -71,7 +71,6 @@
 
             margin-top: 20px;
         }
-
     </style>
 
     <script type="module">
@@ -130,6 +129,12 @@
             $('#group').append(temp_html)
         });
 
+        //목록 버튼 클릭시 메인 페이지 이동
+        const btn = document.querySelector(".mybtn");
+        btn.addEventListener("click", clickHandler);
+        function clickHandler() {
+                window.location.href = "file:///C:/Users/JH%20Yang/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/%EB%82%B4%EC%9D%BC%EB%B0%B0%EC%9B%80%EC%BA%A0%ED%94%84/%EB%B3%B8%EC%BA%A0%ED%94%84/first%20project/index.html";
+        }
 
     </script>
 </head>
@@ -164,7 +169,7 @@
         <input type="text" class="form-control" placeholder="댓글 입력" aria-label="댓글 입력" aria-describedby="button-addon2">
         <button class="btn btn-outline-secondary" type="button" id="button-addon2">작성</button>
     </div>
-    
+
     <div class="mybtn">
         <button id="btn" type="button">목록</button>
     </div>
