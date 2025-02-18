@@ -54,7 +54,7 @@
 
         .comment {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
 
@@ -71,6 +71,7 @@
 
             margin-top: 20px;
         }
+
     </style>
 
     <script type="module">
@@ -130,6 +131,7 @@
         });
 
         //목록 버튼 클릭시 메인 페이지 이동
+        //https://mu08.tistory.com/135 참고
         const btn = document.querySelector(".mybtn");
         btn.addEventListener("click", clickHandler);
         function clickHandler() {
@@ -167,11 +169,11 @@
 
     <div class="comment">
         <input type="text" class="form-control" placeholder="댓글 입력" aria-label="댓글 입력" aria-describedby="button-addon2">
-        <button class="btn btn-outline-secondary" type="button" id="button-addon2">작성</button>
+        <button class="btn1" type="button" id="button-addon2">작성</button>
     </div>
 
     <div class="mybtn">
-        <button id="btn" type="button">목록</button>
+        <button id="btn2" type="button">목록</button>
     </div>
 </body>
 
