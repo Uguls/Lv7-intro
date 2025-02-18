@@ -37,7 +37,7 @@
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
@@ -51,41 +51,40 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        $("#postingbtn").click(async function () {
-            let file = $('#file')[0].files[0];
-            let name = $('#name').val();
-            let mbti = $('#mbti').val();
-            let advantage = $('#advantage').val();
-            let style = $('#style').val();
-            let blog = $('#blog').val();
-
-            if (file) {
-                uploadImage(file)
-                    .then(function (downloadURL) {
-                        let doc = {
-                            'file': downloadURL,
-                            'name': name,
-                            'mbti': mbti,
-                            'advantage': advantage,
-                            'style': style,
-                            'blog': blog
-                        };
-                        addDoc(collection(db, "members"), doc)
-                            .then(function () {
-                                alert('저장완료!');
-                                window.location.reload();
-                            })
-                            .catch(function (error) {
-                                console.error("문서 저장 실패:", error);
-                                alert("저장 실패");
-                            });
-                    })
-                    .catch(function (error) {
-                        alert("사진 업로드 실패: " + error);
-                    });
-            } else {
-                alert("사진을 선택해 주세요!");
-            }
+        $("#updatebtn").click(async function () {
+          const urlParams = new URL(location.href).searchParams;
+          const id = urlParams.get('id');
+          
+          let image = $('#imageUrl').val();
+          let name = $('#name').val();
+          let mbti = $('#mbti').val();
+          let advantage = $('#advantage').val();
+          let style = $('#style').val();
+          let blog = $('#blog').val();
+          
+          if (image) {
+            let data = {
+              'image': image,
+              'name': name,
+              'mbti': mbti,
+              'advantage': advantage,
+              'style': style,
+              'blog': blog
+            };
+            
+            const docRef = doc(db, "members", id);
+            updateDoc(docRef, data)
+              .then(function () {
+                alert('수정완료!');
+                window.location.reload();
+              })
+              .catch(function (error) {
+                console.error("문서 수정 실패:", error);
+                alert("수정 실패");
+              });
+          } else {
+            alert("사진 URL을 입력해 주세요!");
+          }
         });
         
         async function getData(id) {
@@ -99,7 +98,8 @@
             $("#advantage").val(member.advantage);
             $("#style").val(member.style);
             $("#blog").val(member.blog);
-            $("#image").val(member.image);
+            $("#imageUrl").val(member.image);
+            $("#member-image").attr("src", member.image);
           } else {
             console.log("해당 멤버가 존재하지 않습니다.");
             return null;
@@ -118,32 +118,33 @@
     <div class="container py-5">
         <h1 class="mb-4">팀원 수정</h1>
         <div class="form-container">
-            <form id="memberForm">
-                <div class="form-row">
-                    <label for="name" class="form-label">이름</label>
-                    <input type="text" class="form-control" id="name" required>
-                </div>
-                <div class="form-row">
-                    <label for="mbti" class="form-label">MBTI</label>
-                    <input type="text" class="form-control" id="mbti" required>
-                </div>
-                <div class="form-row">
-                    <label for="merit" class="form-label">장점</label>
-                    <input type="text" class="form-control" id="advantage" required>
-                </div>
-                <div class="form-row">
-                    <label for="coStyle" class="form-label">협업 스타일</label>
-                    <input type="text" class="form-control" id="style" required>
-                </div>
-                <div class="form-row">
-                    <label for="blog" class="form-label">블로그 주소</label>
-                    <input type="text" class="form-control" id="blog" required>
-                </div>
+          <img id="member-image" src="" alt="멤버 사진" style="width: 50%;">
+          <form id="memberForm">
               <div class="form-row">
-                <label for="image" class="form-label">사진 업로드</label>
-                <input type="text" class="form-control" id="image" accept="image/*" required>
+                <label for="image" class="form-label">프로필 사진</label>
+                <input type="text" class="form-control" id="imageUrl" accept="image/*" required>
               </div>
-                <button id="postingbtn" type="button" class="btn btn-outline-secondary">수정</button>
+              <div class="form-row">
+                  <label for="name" class="form-label">이름</label>
+                  <input type="text" class="form-control" id="name" required>
+              </div>
+              <div class="form-row">
+                  <label for="mbti" class="form-label">MBTI</label>
+                  <input type="text" class="form-control" id="mbti" required>
+              </div>
+              <div class="form-row">
+                  <label for="merit" class="form-label">장점</label>
+                  <input type="text" class="form-control" id="advantage" required>
+              </div>
+              <div class="form-row">
+                  <label for="coStyle" class="form-label">협업 스타일</label>
+                  <input type="text" class="form-control" id="style" required>
+              </div>
+              <div class="form-row">
+                  <label for="blog" class="form-label">블로그 주소</label>
+                  <input type="text" class="form-control" id="blog" required>
+              </div>
+            <button id="updatebtn" type="button" class="btn btn-outline-secondary">수정</button>
             </form>
         </div>
     </div>
