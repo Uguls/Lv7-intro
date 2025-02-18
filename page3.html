@@ -103,68 +103,17 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        $(".inputgroup").empty();
+        let docs = await getDocs(collection(db, "members"));
+        docs.forEach((doc) => {
+            let row = doc.data();
 
-        // let docs = await getDocs(collection(db, "members"));
-        // docs.forEach((doc) => {
-        //     let row = doc.data();
-
-        //     let image = row['image'];
-        //     let name = row['name'];
-        //     let advantage = row['advantage'];
-        //     let blog = row['blog'];
-        //     let mbti = row['mbti'];
-        //     let style = row['style'];
-
-        //     let temp_html = `
-        //         <div>
-        //             <figure class="figure">
-        //                 <img src="${image}" class="figure-img img-fluid rounded" id="image" alt="...">
-        //                 <p class="name" id="name">${name}</p>
-        //             </figure>
-        //             <div class="row mb-3">
-        //                 <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
-        //                 <p type="advantages" class="list" id="advantage">${advantage}</p>
-        //             </div>
-        //             <div class="row mb-3">
-        //                 <label for="inputgoods" class="col-sm-2 col-form-label">blog</label>
-        //                 <p type="blog" class="list" id="blog">${blog}</p>
-        //             </div>
-        //             <div class="row mb-3">
-        //                 <label for="inputstyle" class="col-sm-2 col-form-label">MBTI</label>
-        //                 <p type="mbti" class="list" id="mbti">${mbti}</p>
-        //             </div>
-        //             <div class="row mb-3">
-        //                 <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
-        //                 <p type="style" class="list" id="style">${style}</p>
-        //             </div>
-        //         </div>`;
-        //     $('#group').append(temp_html)
-        // });
-
-        //id값에 맞는 값만 보이게 하기
-        async function getData(id) {
-            const docRef = doc(db, "members", id);
-            const docSnap = await getDoc(docRef);
-            const member = docSnap.data();
-
-            //   if (docSnap.exists()) {
-            //     $("#name").val(member.name);
-            //     $("#mbti").val(member.mbti);
-            //     $("#advantage").val(member.advantage);
-            //     $("#style").val(member.style);
-            //     $("#blog").val(member.blog);
-            //     $("#imageUrl").val(member.image);
-            //     $("#member-image").attr("src", member.image);
-            //   } else {
-            //     console.log("해당 멤버가 존재하지 않습니다.");
-            //     return null;
-            //   }
-            let image = member['image'];
-            let name = member['name'];
-            let advantage = member['advantage'];
-            let blog = member['blog'];
-            let mbti = member['mbti'];
-            let style = member['style'];
+            let image = row['image'];
+            let name = row['name'];
+            let advantage = row['advantage'];
+            let blog = row['blog'];
+            let mbti = row['mbti'];
+            let style = row['style'];
 
             let temp_html = `
                 <div>
@@ -190,7 +139,27 @@
                     </div>
                 </div>`;
             $('#group').append(temp_html)
-        }
+        });
+
+        //id값에 맞는 값만 보이게 하기
+        // async function getData(id) {
+        //     const docRef = doc(db, "members", id);
+        //     const docSnap = await getDoc(docRef);
+        //     const member = docSnap.data();
+
+        //     if (docSnap.exists()) {
+        //         $("#name").val(member.name);
+        //         $("#mbti").val(member.mbti);
+        //         $("#advantage").val(member.advantage);
+        //         $("#style").val(member.style);
+        //         $("#blog").val(member.blog);
+        //         $("#imageUrl").val(member.image);
+        //         $("#member-image").attr("src", member.image);
+        //     } else {
+        //         console.log("해당 멤버가 존재하지 않습니다.");
+        //         return null;
+        //     }
+        // }
 
         // $(document).ready(function () {
         //     const urlParams = new URL(location.href).searchParams;
