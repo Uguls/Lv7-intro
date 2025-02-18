@@ -81,6 +81,97 @@
             padding-left: 35px;
         }
     </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
+            authDomain: "lv7-introduction.firebaseapp.com",
+            projectId: "lv7-introduction",
+            storageBucket: "lv7-introduction.firebasestorage.app",
+            messagingSenderId: "722530554104",
+            appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function getData(id) {
+            if (!id) return;
+
+            try {
+                const docRef = doc(db, "members", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const member = docSnap.data();
+                    $("#name").val(member.name);
+                    $("#mbti").val(member.mbti);
+                    $("#advantage").val(member.advantage);
+                    $("#style").val(member.style);
+                    $("#blog").val(member.blog);
+                    $("#image").val(member.image);
+                } else {
+                    console.log("해당 멤버가 존재하지 않습니다.");
+                }
+            } catch (error) {
+                console.error("데이터 가져오기 실패:", error);
+            }
+        }
+
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (id) {
+                $("#savePost").text("수정");
+                getData(id);
+            } else {
+                $("#savePost").text("추가");
+            }
+        });
+
+        $("#savePost").click(async function () {
+            const urlParams = new URL(location.href).searchParams;
+            const id = urlParams.get('id');
+
+            let image = $('#image').val();
+            let name = $('#name').val();
+            let mbti = $('#mbti').val();
+            let advantage = $('#advantage').val();
+            let style = $('#style').val();
+            let blog = $('#blog').val();
+
+            if (!name || !mbti || !advantage || !style || !blog || !image) {
+                alert("모든 필드를 입력해주세요!");
+                return;
+            }
+
+            let docData = {
+                'image': image,
+                'name': name,
+                'mbti': mbti,
+                'advantage': advantage,
+                'style': style,
+                'blog': blog
+            };
+
+            try {
+                if (id) {
+                    const docRef = doc(db, "members", id);
+                    await updateDoc(docRef, docData);
+                    alert('수정 완료!');
+                } else {
+                    await addDoc(collection(db, "members"), docData);
+                    alert('추가 완료!');
+                }
+                window.location.href = "index.html";
+            } catch (error) {
+                console.error("오류 발생:", error);
+                alert("작업 실패");
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -112,59 +203,13 @@
                     <i class="form-icon bi bi-image"></i>
                     <input type="text" class="form-control" id="image" placeholder="사진 URL을 입력하세요" required>
                 </div>
-                <button id="postingbtn" type="button" class="btn btn-custom">추가</button>
+
+                <button id="savePost" type="button" class="btn btn-custom">추가</button>
             </form>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
-            authDomain: "lv7-introduction.firebaseapp.com",
-            projectId: "lv7-introduction",
-            storageBucket: "lv7-introduction.firebasestorage.app",
-            messagingSenderId: "722530554104",
-            appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        $("#postingbtn").click(async function () {
-            let image = $('#image').val();
-            let name = $('#name').val();
-            let mbti = $('#mbti').val();
-            let advantage = $('#advantage').val();
-            let style = $('#style').val();
-            let blog = $('#blog').val();
-
-            if (!name || !mbti || !advantage || !style || !blog || !image) {
-                alert("모든 필드를 입력해주세요!");
-                return;
-            }
-
-            let doc = {
-                'image': image,
-                'name': name,
-                'mbti': mbti,
-                'advantage': advantage,
-                'style': style,
-                'blog': blog
-            };
-
-            try {
-                await addDoc(collection(db, "members"), doc);
-                alert('팀원이 추가되었습니다!');
-                window.location.reload();
-            } catch (error) {
-                console.error("문서 저장 실패:", error);
-                alert("저장 실패");
-            }
-        });
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"></script>
 </body>
