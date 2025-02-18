@@ -59,8 +59,8 @@
             justify-content: center;
 
             margin: 30px auto 0px auto;
-
             width: 1400px;
+
         }
 
         .btn1 {
@@ -70,7 +70,7 @@
         .com_res {
             margin-top: 30px;
             font-size: 20px;
-            
+
             border: 3px solid white;
         }
 
@@ -83,7 +83,7 @@
             margin-top: 20px;
             margin-bottom: 30px;
         }
-              
+
     </style>
 
     <script type="module">
@@ -151,29 +151,7 @@
         }
 
 
-        //댓글작성 부분
-        $("#comment_btn").click(async function () {
-            let comment_text = $('#comment_text').val();
-
-            let doc = {
-                'comment_text': comment_text,
-            }
-            await addDoc(collection(db, "comments"), doc);
-            window.location.reload();
-        })
-
-        let docs1 = await getDocs(collection(db, "comments"));
-        docs1.forEach((doc1) => {
-            let row = doc1.data();
-
-            let comment_text = row['comment_text'];
-
-            let temp_html = `
-            <div>
-                <h2 class="com_res">${comment_text}</h2>
-            </div>`;
-            $('#group').append(temp_html)
-        });
+       
 
     </script>
 </head>
@@ -204,13 +182,8 @@
         </div>
     </div>
 
-    <div class="comment">
-        <input type="text" class="form-control" id="comment_text" placeholder="댓글 입력" aria-label="댓글 입력" aria-describedby="button-addon2">
-        <button class="btn1" type="button" id="comment_btn">작성</button>
-        <div>
-            <h2 class="com_res"></h2>
-        </div>
-    </div>
+    
+
     <div class="mybtn">
         <button id="btn2" type="button">목록</button>
     </div>
