@@ -83,7 +83,6 @@
             margin-top: 20px;
             margin-bottom: 30px;
         }
-
     </style>
 
     <script type="module">
@@ -105,22 +104,73 @@
         const db = getFirestore(app);
 
 
-        let docs = await getDocs(collection(db, "members"));
-        docs.forEach((doc) => {
-            let row = doc.data();
+        // let docs = await getDocs(collection(db, "members"));
+        // docs.forEach((doc) => {
+        //     let row = doc.data();
 
-            let image = row['image'];
-            let name = row['name'];
-            let advantage = row['advantage'];
-            let blog = row['blog'];
-            let mbti = row['mbti'];
-            let style = row['style'];
+        //     let image = row['image'];
+        //     let name = row['name'];
+        //     let advantage = row['advantage'];
+        //     let blog = row['blog'];
+        //     let mbti = row['mbti'];
+        //     let style = row['style'];
+
+        //     let temp_html = `
+        //         <div>
+        //             <figure class="figure">
+        //                 <img src="${image}" class="figure-img img-fluid rounded" id="image" alt="...">
+        //                 <p class="name" id="name">${name}</p>
+        //             </figure>
+        //             <div class="row mb-3">
+        //                 <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
+        //                 <p type="advantages" class="list" id="advantage">${advantage}</p>
+        //             </div>
+        //             <div class="row mb-3">
+        //                 <label for="inputgoods" class="col-sm-2 col-form-label">blog</label>
+        //                 <p type="blog" class="list" id="blog">${blog}</p>
+        //             </div>
+        //             <div class="row mb-3">
+        //                 <label for="inputstyle" class="col-sm-2 col-form-label">MBTI</label>
+        //                 <p type="mbti" class="list" id="mbti">${mbti}</p>
+        //             </div>
+        //             <div class="row mb-3">
+        //                 <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
+        //                 <p type="style" class="list" id="style">${style}</p>
+        //             </div>
+        //         </div>`;
+        //     $('#group').append(temp_html)
+        // });
+
+        //id값에 맞는 값만 보이게 하기
+        async function getData(id) {
+            const docRef = doc(db, "members", id);
+            const docSnap = await getDoc(docRef);
+            const member = docSnap.data();
+
+            //   if (docSnap.exists()) {
+            //     $("#name").val(member.name);
+            //     $("#mbti").val(member.mbti);
+            //     $("#advantage").val(member.advantage);
+            //     $("#style").val(member.style);
+            //     $("#blog").val(member.blog);
+            //     $("#imageUrl").val(member.image);
+            //     $("#member-image").attr("src", member.image);
+            //   } else {
+            //     console.log("해당 멤버가 존재하지 않습니다.");
+            //     return null;
+            //   }
+            let image = member['image'];
+            let name = member['name'];
+            let advantage = member['advantage'];
+            let blog = member['blog'];
+            let mbti = member['mbti'];
+            let style = member['style'];
 
             let temp_html = `
                 <div>
                     <figure class="figure">
-                        <img src="${image}" class="figure-img img-fluid rounded" alt="...">
-                        <p class="name">${name}</p>
+                        <img src="${image}" class="figure-img img-fluid rounded" id="image" alt="...">
+                        <p class="name" id="name">${name}</p>
                     </figure>
                     <div class="row mb-3">
                         <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
@@ -140,18 +190,26 @@
                     </div>
                 </div>`;
             $('#group').append(temp_html)
-        });
+        }
+
+        // $(document).ready(function () {
+        //     const urlParams = new URL(location.href).searchParams;
+        //     const id = urlParams.get('id');
+        //     getData(id);
+        // })
+
+
 
         //목록 버튼 클릭시 메인 페이지 이동
         //https://mu08.tistory.com/135 참고
         const btn = document.querySelector(".mybtn");
         btn.addEventListener("click", clickHandler);
         function clickHandler() {
-            window.location.href = "file:///C:/Users/JH%20Yang/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/%EB%82%B4%EC%9D%BC%EB%B0%B0%EC%9B%80%EC%BA%A0%ED%94%84/%EB%B3%B8%EC%BA%A0%ED%94%84/first%20project/index.html";
+            window.location.href = "index.html";
         }
 
 
-       
+
 
     </script>
 </head>
@@ -160,8 +218,8 @@
     <div class="inputgroup" id="group">
         <div>
             <figure class="figure">
-                <img src="..." class="figure-img img-fluid rounded" alt="...">
-                <p class="name">이름</p>
+                <img src="" class="figure-img img-fluid rounded" id="image" alt="...">
+                <p class="name" id="name"></p>
             </figure>
             <div class="list">
                 <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
@@ -181,8 +239,6 @@
             </div>
         </div>
     </div>
-
-    
 
     <div class="mybtn">
         <button id="btn2" type="button">목록</button>
