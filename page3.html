@@ -85,10 +85,7 @@
         $(".inputgroup").empty();
         const params = new URLSearchParams(window.location.search);
         const id = params.get("id");
-        // const q = query(collection(db, "members", id));
         let data = await getDoc(doc(db, "members", id));
-        // let docs = await getDocs(q);
-        // docs.forEach((doc) => {
         let row = data.data();
 
         let image = row['image'];
@@ -122,36 +119,6 @@
                     </div>
                 </div>`;
         $('#group').append(temp_html);
-
-
-        // 비동기적 방법 사용(async await, ready)
-        // async function getData(id) {
-        //     const docRef = doc(db, "members", id);
-        //     const docSnap = await getDoc(docRef);
-        //     const member = docSnap.data();
-
-        //     if (docSnap.exists()) {
-        //         $("#name").val(member.name);
-        //         $("#mbti").val(member.mbti);
-        //         $("#advantage").val(member.advantage);
-        //         $("#style").val(member.style);
-        //         $("#blog").val(member.blog);
-        //         // $("#imageUrl").val(member.image);
-        //         $("#member-image").attr("src", member.image);
-        //     } else {
-        //         console.log("해당 멤버가 존재하지 않습니다.");
-        //         return null;
-        //     }
-        // }
-
-        // $(document).ready(function () {
-        //     const params = new URLSearchParams(window.location.search);
-        //     const id = params.get('id');
-        //     // const urlParams = new URL(location.href).searchParams;
-        //     // const id = urlParams.get('id');
-        //     getData(id);
-        // })
-
 
 
         //목록 버튼 클릭시 메인 페이지 이동
