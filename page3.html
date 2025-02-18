@@ -16,44 +16,60 @@
             color: white
         }
 
-        .main>figure {
+        .inputgroup {
+            width: 1500px;
+
+            margin: 200px auto 30px auto;
+            font-size: 20px;
+        }
+
+        .figure {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .name {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
 
-            
+            font-size: 60px;
         }
 
-        .name {
-            width: 500px;
-            font-size: 50px;
-        }
-
-        .inputgroup {
-            width: 1500px;
-            height: 50px;
-
-            margin-left: 100px;
-            font-size: 20px;
-        }
-
-        .form-control {
+        .list {
             width: 1000px;
             height: auto;
+
+            margin-right: 3px;
 
             background-color: transparent;
             color: white;
             border: none;
+
+            display: flex;
         }
 
         .comment {
-            margin: 500px auto 0px 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            margin: 30px auto 0px auto;
+
+            width: 1500px;
         }
 
-        .btn {
+        .mybtn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
             margin-top: 20px;
-            margin-left: 100px;
         }
 
     </style>
@@ -96,19 +112,19 @@
                     </figure>
                     <div class="row mb-3">
                         <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
-                        <p type="advantages" class="form-control" id="advantage">${advantage}</p>
+                        <p type="advantages" class="list" id="advantage">${advantage}</p>
                     </div>
                     <div class="row mb-3">
                         <label for="inputgoods" class="col-sm-2 col-form-label">blog</label>
-                        <p type="blog" class="form-control" id="blog">${blog}</p>
+                        <p type="blog" class="list" id="blog">${blog}</p>
                     </div>
                     <div class="row mb-3">
                         <label for="inputstyle" class="col-sm-2 col-form-label">MBTI</label>
-                        <p type="mbti" class="form-control" id="mbti">${mbti}</p>
+                        <p type="mbti" class="list" id="mbti">${mbti}</p>
                     </div>
                     <div class="row mb-3">
                         <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
-                        <p type="style" class="form-control" id="style">${style}</p>
+                        <p type="style" class="list" id="style">${style}</p>
                     </div>
                 </div>`;
             $('#group').append(temp_html)
@@ -125,32 +141,32 @@
                 <img src="..." class="figure-img img-fluid rounded" alt="...">
                 <p class="name">이름</p>
             </figure>
-            <div class="row mb-3">
+            <div class="list">
                 <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
-                <p type="advantage" class="form-control" id="advantage">...</p>
+                <p type="advantage" class="list2" id="advantage">...</p>
             </div>
-            <div class="row mb-3">
+            <div class="list">
                 <label for="inputgoods" class="col-sm-2 col-form-label">blog</label>
-                <p type="blog" class="form-control" id="blog">...</p>
+                <p type="blog" class="list2" id="blog">...</p>
             </div>
-            <div class="row mb-3">
+            <div class="list">
                 <label for="inputstyle" class="col-sm-2 col-form-label">MBTI</label>
-                <p type="mbti" class="form-control" id="mbti">...</p>
+                <p type="mbti" class="list2" id="mbti">...</p>
             </div>
-            <div class="row mb-3">
+            <div class="list">
                 <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
-                <p type="style" class="form-control" id="style">...</p>
+                <p type="style" class="list2" id="style">...</p>
             </div>
         </div>
     </div>
 
-    <div>
-        <textarea class="comment" placeholder="댓글 입력" id="floatingText"></textarea>
+    <div class="comment">
+        <input type="text" class="form-control" placeholder="댓글 입력" aria-label="댓글 입력" aria-describedby="button-addon2">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon2">작성</button>
     </div>
-    <div>
-        <button type="button" class="btn">수정</button>
-        <button type="button" class="btn">삭제</button>
-        <button type="button" class="btn">목록</button>
+    
+    <div class="mybtn">
+        <button id="btn" type="button">목록</button>
     </div>
 </body>
 
