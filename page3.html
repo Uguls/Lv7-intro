@@ -236,9 +236,15 @@
   <div class="comment container bg-light text-dark rounded p-3">
     <form class="row g-3">
       <h4 class="mb-4">댓글 작성</h4>
-      <div class="col-md-3">
-        <label for="inputAuthor" class="form-label">작성자</label>
-        <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
+      <div style="display: flex;">
+        <div>
+          <label for="inputAuthor" class="form-label">작성자</label>
+          <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
+        </div>
+        <div style="width: 100%; margin-left: 5px">
+          <label for="inputProfileImg" class="form-label">프로필 사진</label>
+          <input type="text" class="form-control" id="inputProfileImg" placeholder="URL">
+        </div>
       </div>
       <div class="col-12">
         <label for="inputComment" class="form-label">내용</label>
