@@ -78,13 +78,17 @@
             margin-bottom: 30px;
         }
 
-        .commentdelbtn {
-            display: flex;
-            width: auto;
-            height: auto;
-            font-size: 10px;
-            padding: 0px;
+        .border p-3 mb-2 bg-white rounded {
+            flex-direction: row;
         }
+
+        .commentdelbtn {
+            border-color: white;
+            background-color: white;
+            border: none;
+            font-size: 18px;
+        }
+        
     </style>
 
     <script type="module">
@@ -148,73 +152,77 @@
                     </div>
                   </div>
                 </div>`;
-            $('#group').append(temp_html);
-        }
-
-        async function deleteMember() {
-            if (!confirm("정말 삭제하시겠습니까?")) return;
-            try {
-                await deleteDoc(doc(db, "members", id));
-                alert("삭제되었습니다.");
-                window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
-            } catch (error) {
-                console.error("삭제 실패:", error);
-                alert("삭제 실패!");
-            }
-        }
-
-        $("#commentbtn").click(async function () {
-            const urlParams = new URL(location.href).searchParams;
-            const id = urlParams.get('id');
-
-            let author = $("#inputAuthor").val().trim();
-            let content = $("#inputComment").val().trim();
-
-            if (!author || !content) {
-                alert("작성자와 내용을 입력하세요.");
-                return;
-            }
-
-            try {
-                await addDoc(collection(db, "comments"), {
-                    postId: id,
-                    author: author,
-                    content: content,
-                    timestamp: new Date()
-                })
-
-                alert("댓글이 작성되었습니다.");
-                $("#inputAuthor").val("");
-                $("#inputComment").val("");
-            } catch (error) {
-                console.error("댓글 작성 실패:", error);
-                alert("댓글 작성 중 오류가 발생했습니다.");
-            }
-        });
-
-        function loadComments(postId) {
-            const commentsContainer = $(".container.bg-light.text-dark.rounded.p-3.mb-2 div");
-            commentsContainer.empty();
-
-            const q = query(
-                collection(db, "comments"),
-                where("postId", "==", postId),
-                orderBy("timestamp", "desc")
-            );
-
-            onSnapshot(q, (snapshot) => {
-                commentsContainer.empty();
-
-                snapshot.forEach((doc) => {
-                    let comment = doc.data();
-                    let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
-
-                    let commentItem = `
-                <div class="border p-3 mb-2 bg-white rounded" id="comres">
+      $('#group').append(temp_html);
+    }
+    
+    async function deleteMember() {
+      if (!confirm("정말 삭제하시겠습니까?")) return;
+      try {
+        await deleteDoc(doc(db, "members", id));
+        alert("삭제되었습니다.");
+        window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
+      } catch (error) {
+        console.error("삭제 실패:", error);
+        alert("삭제 실패!");
+      }
+    }
+    
+    $("#commentbtn").click(async function () {
+      const urlParams = new URL(location.href).searchParams;
+      const id = urlParams.get('id');
+      
+      let author = $("#inputAuthor").val().trim();
+      let content = $("#inputComment").val().trim();
+      let inputProfileImg = $("#inputComment").val().trim();
+      
+      if (!author || !content) {
+        alert("작성자와 내용을 입력하세요.");
+        return;
+      }
+      
+      try {
+        await addDoc(collection(db, "comments"), {
+          postId: id,
+          author: author,
+          content: content,
+          timestamp: new Date()
+        })
+        alert("댓글이 작성되었습니다.");
+        $("#inputAuthor").val("");
+        $("#inputComment").val("");
+        $("#inputProfileImg").val("");
+      } catch (error) {
+        console.error("댓글 작성 실패:", error);
+        alert("댓글 작성 중 오류가 발생했습니다.");
+      }
+    });
+    
+    function loadComments(postId) {
+      const commentsContainer = $(".container.bg-light.text-dark.rounded.p-3.mb-2 div");
+      commentsContainer.empty();
+      
+      const q = query(
+        collection(db, "comments"),
+        where("postId", "==", postId),
+        orderBy("timestamp", "desc")
+      );
+      
+      onSnapshot(q, (snapshot) => {
+        commentsContainer.empty();
+        
+        snapshot.forEach((doc) => {
+          let comment = doc.data();
+          let commentId = doc.id;
+          let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
+          let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
+          
+          let commentItem = `
+                <div class="border p-3 mb-2 bg-white rounded" id="${commentId}">
+                    <img src="${img}" style="width: 30px; height: 30px; border-radius: 100px" onerror="this.onerror=null; this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s';">
                     <strong>${comment.author}</strong>
                     <small class="text-muted">${timestamp}</small>
-                    <p>${comment.content}</p>
                     <button id="comdelbtn" type="button" class="commentdelbtn">x</button>
+                    <p>${comment.content}</p>                    
                 </div>
             `;
 
@@ -243,11 +251,13 @@
 
         //댓글 삭제
         $(document).ready(function () {
-            $(document).on("click", '#comdelbtn', function () {
-                console.log("123")
+            $(document).on("click", '#comdelbtn', async function () {
+                // console.log("123")
+                let id = $("#comdelbtn").parent().attr("id");
+                console.log(id)
                 // const urlParams = new URLSearchParams(window.location.search);
                 // const id = urlParams.get('id');
-                deleteDoc(doc(db, "comments", id));
+                await deleteDoc(doc(db, "comments", id));
                 
                 alert('댓글이 삭제되었습니다');
                 window.location.reload();
@@ -268,29 +278,35 @@
         <button id="delete-btn" type="button" class="btn btn-secondary">삭제</button>
     </div>
 
-    <div class="container py-5">
-        <div class="container bg-light text-dark rounded p-3 mb-2">
-            <h4 class="mb-4">댓글 목록</h4>
-            <div>
-            </div>
-        </div>
-        <div class="comment container bg-light text-dark rounded p-3">
-            <form class="row g-3">
-                <h4 class="mb-4">댓글 작성</h4>
-                <div class="col-md-3">
-                    <label for="inputAuthor" class="form-label">작성자</label>
-                    <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
-                </div>
-                <div class="col-12">
-                    <label for="inputComment" class="form-label">내용</label>
-                    <input type="text" class="form-control" id="inputComment" placeholder="댓글 작성">
-                </div>
-                <div class="col-12">
-                    <button id="commentbtn" type="button" class="btn btn-secondary">작성</button>
-                </div>
-            </form>
-        </div>
+<div class="container py-5">
+  <div class="container bg-light text-dark rounded p-3 mb-2">
+    <h4 class="mb-4">댓글 목록</h4>
+    <div>
     </div>
+  </div>
+  <div class="comment container bg-light text-dark rounded p-3">
+    <form class="row g-3">
+      <h4 class="mb-4">댓글 작성</h4>
+      <div style="display: flex;">
+        <div>
+          <label for="inputAuthor" class="form-label">작성자</label>
+          <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
+        </div>
+        <div style="width: 100%; margin-left: 5px">
+          <label for="inputProfileImg" class="form-label">프로필 사진</label>
+          <input type="text" class="form-control" id="inputProfileImg" placeholder="URL">
+        </div>
+      </div>
+      <div class="col-12">
+        <label for="inputComment" class="form-label">내용</label>
+        <input type="text" class="form-control" id="inputComment" placeholder="댓글 작성">
+      </div>
+      <div class="col-12">
+        <button id="commentbtn" type="button" class="btn btn-secondary">작성</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 </body>
 
