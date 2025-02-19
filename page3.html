@@ -8,97 +8,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<<<<<<< HEAD
-
-
-    <style>
-        .main {
-            background-color: black;
-            color: white
-        }
-
-        .inputgroup {
-            width: 1500px;
-
-            margin: 200px auto 30px auto;
-            font-size: 25px;
-        }
-
-        .figure {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .name {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 40px;
-        }
-
-        .list {
-            width: 1000px;
-            height: auto;
-
-            margin-right: 3px;
-
-            background-color: transparent;
-            color: white;
-            border: none;
-
-            display: flex;
-        }
-
-        .mybtn {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
-        
-    </style>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getDocs, query, where, limit, getDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
-            authDomain: "lv7-introduction.firebaseapp.com",
-            projectId: "lv7-introduction",
-            storageBucket: "lv7-introduction.firebasestorage.app",
-            messagingSenderId: "722530554104",
-            appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get("id");
-
-        async function loadMember() {
-            let docSnap = await getDoc(doc(db, "members", id));
-            let row = docSnap.data();
-
-            let image = row['image'];
-            let name = row['name'];
-            let advantage = row['advantage'];
-            let blog = row['blog'];
-            let mbti = row['mbti'];
-            let style = row['style'];
-
-            let temp_html = `
-=======
   
   
   <style>
@@ -187,7 +96,6 @@
       let style = row['style'];
       
       let temp_html = `
->>>>>>> bc510889c02ce880a90c4a054133ecfdbf07e250
                 <div>
                     <figure class="figure">
                         <img src="${image}" class="figure-img img-fluid rounded" id="image" alt="...">
