@@ -171,6 +171,7 @@
             const id = urlParams.get('id');
 
             let author = $("#inputAuthor").val().trim();
+            let password = $("#inputPw").val().trim();
             let content = $("#inputComment").val().trim();
             let inputProfileImg = $("#inputComment").val().trim();
 
@@ -184,7 +185,8 @@
                     postId: id,
                     author: author,
                     content: content,
-                    timestamp: new Date()
+                    timestamp: new Date(),
+                    password: password
                 })
                 alert("댓글이 작성되었습니다.");
                 $("#inputAuthor").val("");
@@ -206,11 +208,11 @@
             onSnapshot(q, (snapshot) => {
                 replyContainer.empty();
 
-            snapshot.forEach((doc) => {
-                let reply = doc.data();
-                let id = doc.id;
-                let timestamp = reply.timestamp ? new Date(reply.timestamp.toDate()).toLocaleString() : "방금 전";
-                let replyItem = `
+                snapshot.forEach((doc) => {
+                    let reply = doc.data();
+                    let id = doc.id;
+                    let timestamp = reply.timestamp ? new Date(reply.timestamp.toDate()).toLocaleString() : "방금 전";
+                    let replyItem = `
                     <div class="border p-2 ms-4 bg-light rounded" id="${id}">
                         <strong>${reply.author}</strong>
                         <small class="text-muted">${timestamp}</small>
@@ -243,7 +245,7 @@
                     let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
                     let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
 
-                let replyContainer = $(`<div class="ms-4"></div>`);  // 고유 id 추가
+                    let replyContainer = $(`<div class="ms-4"></div>`);  // 고유 id 추가
 
                     let commentItem = `
                     <div class="border p-3 mb-2 bg-white rounded" id="${commentId}">
@@ -251,7 +253,7 @@
                     <strong>${comment.author}</strong>
                     <small class="text-muted">${timestamp}</small>
                     <button id="comdelbtn" type="button" class="commentdelbtn">x</button>
-                    <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${commentId}">수정</button>
+                    <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${commentId}" id="add_textbox()">수정</button>
                     <p>${comment.content}</p>
                     <button class="btn btn-sm btn-outline-secondary reply-btn" data-id="${commentId}">답글</button>
                     <div class="reply-form" id="replyForm-${commentId}" style="display: none;">
@@ -280,6 +282,11 @@
             });
         }
 
+     
+
+
+
+
         $(document).on("click", ".edit-btn", function () {
             let commentId = $(this).data("id");
             let commentDiv = $(this).closest(".border.p-3.mb-2.bg-white.rounded");
@@ -288,6 +295,17 @@
             let inputField = $(`<input type='text' class='form-control edit-input' value='${commentText}'>`);
             let saveButton = $(`<button class='btn btn-sm btn-secondary save-btn'>저장</button>`); // 여기서 btn-success를 btn-secondary로 변경
             let editButton = $(this);
+
+
+
+            //비번 생성중........
+            let newInput = document.createElement("input");
+            newInput.setAttribute("id", "pwcheck");
+            newInput.setAttribute("type", "password")
+            newInput.append(newInput)
+
+
+
 
             commentDiv.find("p").replaceWith(inputField);
             editButton.replaceWith(saveButton);
@@ -409,10 +427,10 @@
                 window.location.reload();
             })
             $(document).on("click", '#replydelbtn', async function () {
-              let id = $(this).parent().attr("id"); // "#replydelbtn" 대신에 this 넣음(가장 위에 위치한 댓글만 삭제되는 오류 해결)
-              await deleteDoc(doc(db, "replies", id));
-              alert('댓글이 삭제되었습니다');
-              window.location.reload();
+                let id = $(this).parent().attr("id"); // "#replydelbtn" 대신에 this 넣음(가장 위에 위치한 댓글만 삭제되는 오류 해결)
+                await deleteDoc(doc(db, "replies", id));
+                alert('댓글이 삭제되었습니다');
+                window.location.reload();
             })
         })
 
@@ -443,6 +461,10 @@
                     <div>
                         <label for="inputAuthor" class="form-label">작성자</label>
                         <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
+                    </div>
+                    <div>
+                        <label for="inputPw" class="form-label">비밀번호</label>
+                        <input type="password" maxlength="4" class="form-control" id="inputPw" placeholder="비밀번호">
                     </div>
                     <div style="width: 100%; margin-left: 5px">
                         <label for="inputProfileImg" class="form-label">프로필 사진</label>
