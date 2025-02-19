@@ -200,7 +200,7 @@
             const q = query(
                 collection(db, "replies"),
                 where("commentId", "==", commentId),
-                orderBy("timestamp", "desc")
+                orderBy("timestamp") //desc 삭제
             );
 
             onSnapshot(q, (snapshot) => {
@@ -231,7 +231,7 @@
             const q = query(
                 collection(db, "comments"),
                 where("postId", "==", postId),
-                orderBy("timestamp", "desc")
+                orderBy("timestamp") // desc 삭제
             );
 
             onSnapshot(q, (snapshot) => {
@@ -402,13 +402,14 @@
         //댓글 삭제
         $(document).ready(function () {
             $(document).on("click", '#comdelbtn', async function () {
-                let id = $("#comdelbtn").parent().attr("id");
+                let id = $(this).parent().attr("id"); // "#comdelbtn" 대신에 this 넣음(가장 위에 위치한 댓글만 삭제되는 오류 해결)
                 await deleteDoc(doc(db, "comments", id));
+                console.log(id)
                 alert('댓글이 삭제되었습니다');
                 window.location.reload();
             })
             $(document).on("click", '#replydelbtn', async function () {
-              let id = $("#replydelbtn").parent().attr("id");
+              let id = $(this).parent().attr("id"); // "#replydelbtn" 대신에 this 넣음(가장 위에 위치한 댓글만 삭제되는 오류 해결)
               await deleteDoc(doc(db, "replies", id));
               alert('댓글이 삭제되었습니다');
               window.location.reload();
