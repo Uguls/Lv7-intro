@@ -181,6 +181,7 @@
         snapshot.forEach((doc) => {
           let comment = doc.data();
           let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
+          let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
           
           let commentItem = `
                 <div class="border p-3 mb-2 bg-white rounded">
