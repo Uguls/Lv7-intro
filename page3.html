@@ -215,6 +215,7 @@
                         <strong>${reply.author}</strong>
                         <small class="text-muted">${timestamp}</small>
                         <button id="replydelbtn" type="button" class="commentdelbtn">x</button>
+                        <button class="btn btn-sm btn-outline-primary edit-reply-btn" data-id="${id}">수정</button>
                         <p>${reply.content}</p>
                     </div>
                 `;
@@ -309,6 +310,40 @@
                 } catch (error) {
                     console.error("댓글 수정 실패:", error);
                     alert("댓글 수정 중 오류가 발생했습니다.");
+                }
+            });
+        });
+
+        $(document).on("click", ".edit-reply-btn", function () {
+            let replyId = $(this).data("id");
+            let replyDiv = $(this).closest(".border.p-2.ms-4.bg-light.rounded");
+            let replyText = replyDiv.find("p").text();
+
+            let inputField = $(`<input type='text' class='form-control edit-input' value='${replyText}'>`);
+            let saveButton = $(`<button class='btn btn-sm btn-secondary save-reply-btn'>저장</button>`);
+            let editButton = $(this);
+
+            replyDiv.find("p").replaceWith(inputField);
+            editButton.replaceWith(saveButton);
+
+            saveButton.click(async function () {
+                let updatedText = inputField.val().trim();
+                if (!updatedText) {
+                    alert("내용을 입력해주세요.");
+                    return;
+                }
+
+                try {
+                    await updateDoc(doc(db, "replies", replyId), {
+                        content: updatedText
+                    });
+
+                    let replyContent = $(`<p class='reply-content'>${updatedText}</p>`);
+                    inputField.replaceWith(replyContent);
+                    saveButton.replaceWith(editButton);
+                } catch (error) {
+                    console.error("답글 수정 실패:", error);
+                    alert("답글 수정 중 오류가 발생했습니다.");
                 }
             });
         });
