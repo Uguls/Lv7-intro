@@ -199,6 +199,10 @@
     
     document.querySelector("#delete-btn").addEventListener("click", deleteMember);
     
+    document.querySelector("#edit-btn").addEventListener("click", function () {
+      window.location.href = `create.html?id=${id}`; // 수정 페이지로 이동
+    });
+    
     $(document).ready(function () {
       const urlParams = new URL(location.href).searchParams;
       const id = urlParams.get('id');
@@ -212,11 +216,11 @@
 <body class="main">
 <div class="inputgroup" id="group">
 </div>
-</div>
 
 <div class="mybtn">
   <button id="btn" type="button">목록</button>
-  <button id="delete-btn" class="delete-btn" type="button">삭제</button>
+  <button id="edit-btn" type="button">수정</button>
+  <button id="delete-btn" type="button">삭제</button>
 </div>
 
 <div class="container py-5">
