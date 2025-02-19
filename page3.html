@@ -57,7 +57,6 @@
       margin-top: 20px;
       margin-bottom: 30px;
     }
-    
   </style>
   
   <script type="module">
@@ -155,7 +154,6 @@
           content: content,
           timestamp: new Date()
         })
-        
         alert("댓글이 작성되었습니다.");
         $("#inputAuthor").val("");
         $("#inputComment").val("");
@@ -185,7 +183,7 @@
           
           let commentItem = `
                 <div class="border p-3 mb-2 bg-white rounded">
-                <img src="${img}" style="width: 30px; height: 30px; border-radius: 100px">
+                    <img src="${img}" style="width: 30px; height: 30px; border-radius: 100px" onerror="this.onerror=null; this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s';">
                     <strong>${comment.author}</strong>
                     <small class="text-muted">${timestamp}</small>
                     <p>${comment.content}</p>
