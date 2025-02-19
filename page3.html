@@ -209,11 +209,13 @@
 
             snapshot.forEach((doc) => {
                 let reply = doc.data();
+                let id = doc.id;
                 let timestamp = reply.timestamp ? new Date(reply.timestamp.toDate()).toLocaleString() : "방금 전";
                 let replyItem = `
-                    <div class="border p-2 ms-4 bg-light rounded">
+                    <div class="border p-2 ms-4 bg-light rounded" id="${id}">
                         <strong>${reply.author}</strong>
                         <small class="text-muted">${timestamp}</small>
+                        <button id="replydelbtn" type="button" class="commentdelbtn">x</button>
                         <p>${reply.content}</p>
                     </div>
                 `;
@@ -241,7 +243,7 @@
                 let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
                 let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
 
-                let replyContainer = $(`<div id="replyContainer-${commentId}" class="ms-4"></div>`);  // 고유 id 추가
+                let replyContainer = $(`<div class="ms-4"></div>`);  // 고유 id 추가
 
                 let commentItem = `
                     <div class="border p-3 mb-2 bg-white rounded" id="${commentId}">
@@ -330,15 +332,16 @@
         //댓글 삭제
         $(document).ready(function () {
             $(document).on("click", '#comdelbtn', async function () {
-                // console.log("123")
                 let id = $("#comdelbtn").parent().attr("id");
-                console.log(id)
-                // const urlParams = new URLSearchParams(window.location.search);
-                // const id = urlParams.get('id');
                 await deleteDoc(doc(db, "comments", id));
-                
                 alert('댓글이 삭제되었습니다');
                 window.location.reload();
+            })
+            $(document).on("click", '#replydelbtn', async function () {
+              let id = $("#replydelbtn").parent().attr("id");
+              await deleteDoc(doc(db, "replies", id));
+              alert('댓글이 삭제되었습니다');
+              window.location.reload();
             })
         })
 
