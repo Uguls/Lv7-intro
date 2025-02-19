@@ -12,7 +12,7 @@
   
   <style>
     .main {
-      background-color: black;
+      background-color: #d2e5eb;
       color: white
     }
     
@@ -35,7 +35,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      
+      font-weight: bold;
       font-size: 40px;
     }
     
@@ -103,19 +103,19 @@
                     </figure>
                     <div class="row mb-3">
                         <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
-                        <p class="list" id="advantage">${advantage}</p>
+                        <p class="list text-dark" id="advantage">${advantage}</p>
                     </div>
                     <div class="row mb-3">
                         <label for="inputgoods" class="col-sm-2 col-form-label">blog</label>
-                        <p class="list" id="blog">${blog}</p>
+                        <p class="list text-dark" id="blog">${blog}</p>
                     </div>
                     <div class="row mb-3">
                         <label for="inputstyle" class="col-sm-2 col-form-label">MBTI</label>
-                        <p class="list" id="mbti">${mbti}</p>
+                        <p class="list text-dark" id="mbti">${mbti}</p>
                     </div>
                     <div class="row mb-3">
                         <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
-                        <p class="list" id="style">${style}</p>
+                        <p class="list text-dark" id="style">${style}</p>
                     </div>
                 </div>`;
       $('#group').append(temp_html);
@@ -213,14 +213,14 @@
   </script>
 </head>
 
-<body class="main">
+<body class="main text-dark">
 <div class="inputgroup" id="group">
 </div>
 
 <div class="mybtn">
-  <button id="btn" type="button">목록</button>
-  <button id="edit-btn" type="button">수정</button>
-  <button id="delete-btn" type="button">삭제</button>
+  <button id="btn" type="button" class="btn btn-secondary">목록</button>
+  <button id="edit-btn" type="button" class="btn btn-secondary">수정</button>
+  <button id="delete-btn" type="button" class="btn btn-secondary">삭제</button>
 </div>
 
 <div class="container py-5">
@@ -241,7 +241,7 @@
         <input type="text" class="form-control" id="inputComment" placeholder="댓글 작성">
       </div>
       <div class="col-12">
-        <button id="commentbtn" type="button" class="btn btn-primary">작성</button>
+        <button id="commentbtn" type="button" class="btn btn-secondary">작성</button>
       </div>
     </form>
   </div>
