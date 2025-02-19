@@ -54,10 +54,10 @@
 
         .mybtn {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
-
+            gap: 10px;
             margin-top: 20px;
             margin-bottom: 30px;
         }
@@ -68,7 +68,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getDocs, query, where, limit, getDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getDocs, query, where, limit, getDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
@@ -82,21 +82,21 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 동기적 방법 사용(empty, append)
-        $(".inputgroup").empty();
         const params = new URLSearchParams(window.location.search);
         const id = params.get("id");
-        let data = await getDoc(doc(db, "members", id));
-        let row = data.data();
 
-        let image = row['image'];
-        let name = row['name'];
-        let advantage = row['advantage'];
-        let blog = row['blog'];
-        let mbti = row['mbti'];
-        let style = row['style'];
+        async function loadMember() {
+            let docSnap = await getDoc(doc(db, "members", id));
+            let row = docSnap.data();
 
-        let temp_html = `
+            let image = row['image'];
+            let name = row['name'];
+            let advantage = row['advantage'];
+            let blog = row['blog'];
+            let mbti = row['mbti'];
+            let style = row['style'];
+
+            let temp_html = `
                 <div>
                     <figure class="figure">
                         <img src="${image}" class="figure-img img-fluid rounded" id="image" alt="...">
@@ -104,63 +104,54 @@
                     </figure>
                     <div class="row mb-3">
                         <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
-                        <p type="advantages" class="list" id="advantage">${advantage}</p>
+                        <p class="list" id="advantage">${advantage}</p>
                     </div>
                     <div class="row mb-3">
                         <label for="inputgoods" class="col-sm-2 col-form-label">blog</label>
-                        <p type="blog" class="list" id="blog">${blog}</p>
+                        <p class="list" id="blog">${blog}</p>
                     </div>
                     <div class="row mb-3">
                         <label for="inputstyle" class="col-sm-2 col-form-label">MBTI</label>
-                        <p type="mbti" class="list" id="mbti">${mbti}</p>
+                        <p class="list" id="mbti">${mbti}</p>
                     </div>
                     <div class="row mb-3">
                         <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
-                        <p type="style" class="list" id="style">${style}</p>
+                        <p class="list" id="style">${style}</p>
                     </div>
                 </div>`;
-        $('#group').append(temp_html);
-
-
-        //목록 버튼 클릭시 메인 페이지 이동
-        //https://mu08.tistory.com/135 참고
-        const btn = document.querySelector(".mybtn");
-        btn.addEventListener("click", clickHandler);
-        function clickHandler() {
-            window.location.href = "index.html";
+            $('#group').append(temp_html);
         }
+
+        async function deleteMember() {
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+            try {
+                await deleteDoc(doc(db, "members", id));
+                alert("삭제되었습니다.");
+                window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
+            } catch (error) {
+                console.error("삭제 실패:", error);
+                alert("삭제 실패!");
+            }
+        }
+
+        loadMember();
+        document.querySelector("#btn").addEventListener("click", function () {
+            window.location.href = "index.html"; // 메인 페이지로 이동
+        });
+
+        document.querySelector("#delete-btn").addEventListener("click", deleteMember);
 
     </script>
 </head>
 
 <body class="main">
     <div class="inputgroup" id="group">
-        <div>
-            <figure class="figure">
-                <img src="" class="figure-img img-fluid rounded" id="member-image" alt="...">
-                <input class="name" id="name" required>
-            </figure>
-            <div class="list">
-                <label for="advantage" class="col-sm-2 col-form-label">장점</label>
-                <input type="text" class="list2" id="advantage" required>
-            </div>
-            <div class="list">
-                <label for="blog" class="col-sm-2 col-form-label">blog</label>
-                <input type="text" class="list2" id="blog" required>
-            </div>
-            <div class="list">
-                <label for="mbti" class="col-sm-2 col-form-label">MBTI</label>
-                <input type="text" class="list2" id="mbti" required>
-            </div>
-            <div class="list">
-                <label for="style" class="col-sm-2 col-form-label">협업스타일</label>
-                <input type="text" class="list2" id="style" required>
-            </div>
-        </div>
+    </div>
     </div>
 
     <div class="mybtn">
         <button id="btn" type="button">목록</button>
+        <button id="delete-btn" class="delete-btn" type="button">삭제</button>
     </div>
 
 </body>
