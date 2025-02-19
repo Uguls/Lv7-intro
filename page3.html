@@ -23,7 +23,7 @@
         }
 
         .list_text {
-           width: auto;
+            width: auto;
         }
 
         .figure {
@@ -44,9 +44,9 @@
         .label {
             width: 150px;
         }
-        
+
         .label2 {
-            width : 3px;
+            width: 3px;
         }
 
         .name {
@@ -76,6 +76,14 @@
             gap: 10px;
             margin-top: 20px;
             margin-bottom: 30px;
+        }
+
+        .commentdelbtn {
+            display: flex;
+            width: auto;
+            height: auto;
+            font-size: 10px;
+            padding: 0px;
         }
     </style>
 
@@ -202,10 +210,11 @@
                     let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
 
                     let commentItem = `
-                <div class="border p-3 mb-2 bg-white rounded">
+                <div class="border p-3 mb-2 bg-white rounded" id="comres">
                     <strong>${comment.author}</strong>
                     <small class="text-muted">${timestamp}</small>
                     <p>${comment.content}</p>
+                    <button id="comdelbtn" type="button" class="commentdelbtn">x</button>
                 </div>
             `;
 
@@ -230,6 +239,21 @@
             const id = urlParams.get('id');
             loadComments(id);
         })
+
+
+        //댓글 삭제
+        $(document).ready(function () {
+            $(document).on("click", '#comdelbtn', function () {
+                console.log("123")
+                // const urlParams = new URLSearchParams(window.location.search);
+                // const id = urlParams.get('id');
+                deleteDoc(doc(db, "comments", id));
+                
+                alert('댓글이 삭제되었습니다');
+                window.location.reload();
+            })
+        })
+
 
     </script>
 </head>
