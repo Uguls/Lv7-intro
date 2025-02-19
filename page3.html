@@ -58,16 +58,6 @@
       margin-bottom: 30px;
     }
     
-    .comment_author {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-    }
-    
-    .comment_author__box {
-      width: 100%;
-    }
-    
   </style>
   
   <script type="module">
@@ -103,110 +93,6 @@
       let style = row['style'];
       
       let temp_html = `
-
-
-    <style>
-        .main {
-            background-color: #d2e5eb;
-            color: white
-        }
-
-        .inputgroup {
-            /*width: 1500px;*/
-            /*margin: 200px auto 30px auto;*/
-            font-size: 25px;
-        }
-
-        .list_text {
-           width: auto;
-        }
-
-        .figure {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .figure-img {
-            margin-top: 10px;
-            width: 500px;
-            height: 500px;
-            object-fit: cover;
-        }
-
-
-        .label {
-            width: 150px;
-        }
-        
-        .label2 {
-            width : 3px;
-        }
-
-        .name {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 40px;
-        }
-
-        .list {
-            width: 1000px;
-            height: auto;
-            margin-right: 3px;
-            background-color: transparent;
-            color: white;
-            border: none;
-            display: flex;
-        }
-
-        .mybtn {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
-    </style>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getDocs, limit, getDoc, doc, deleteDoc, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
-            authDomain: "lv7-introduction.firebaseapp.com",
-            projectId: "lv7-introduction",
-            storageBucket: "lv7-introduction.firebasestorage.app",
-            messagingSenderId: "722530554104",
-            appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get("id");
-
-        async function loadMember() {
-            let docSnap = await getDoc(doc(db, "members", id));
-            let row = docSnap.data();
-
-            let image = row['image'];
-            let name = row['name'];
-            let advantage = row['advantage'];
-            let blog = row['blog'];
-            let mbti = row['mbti'];
-            let style = row['style'];
-
-            let temp_html = `
                 <div>
                     <figure class="figure">
                         <img src="${image}" class="figure-img" id="image" alt="...">
@@ -256,7 +142,6 @@
       
       let author = $("#inputAuthor").val().trim();
       let content = $("#inputComment").val().trim();
-      let profileImg = $("#inputprofileImg").val() || "";
       
       if (!author || !content) {
         alert("작성자와 내용을 입력하세요.");
@@ -268,14 +153,12 @@
           postId: id,
           author: author,
           content: content,
-          profileImg: profileImg,
           timestamp: new Date()
         })
         
         alert("댓글이 작성되었습니다.");
         $("#inputAuthor").val("");
         $("#inputComment").val("");
-        $("#inputprofileImg").val("");
       } catch (error) {
         console.error("댓글 작성 실패:", error);
         alert("댓글 작성 중 오류가 발생했습니다.");
@@ -297,74 +180,9 @@
         
         snapshot.forEach((doc) => {
           let comment = doc.data();
-          console.log(comment.profileImg)
-          let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
-          
           let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
           
           let commentItem = `
-            $('#group').append(temp_html);
-        }
-
-        async function deleteMember() {
-            if (!confirm("정말 삭제하시겠습니까?")) return;
-            try {
-                await deleteDoc(doc(db, "members", id));
-                alert("삭제되었습니다.");
-                window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
-            } catch (error) {
-                console.error("삭제 실패:", error);
-                alert("삭제 실패!");
-            }
-        }
-
-        $("#commentbtn").click(async function () {
-            const urlParams = new URL(location.href).searchParams;
-            const id = urlParams.get('id');
-
-            let author = $("#inputAuthor").val().trim();
-            let content = $("#inputComment").val().trim();
-
-            if (!author || !content) {
-                alert("작성자와 내용을 입력하세요.");
-                return;
-            }
-
-            try {
-                await addDoc(collection(db, "comments"), {
-                    postId: id,
-                    author: author,
-                    content: content,
-                    timestamp: new Date()
-                })
-
-                alert("댓글이 작성되었습니다.");
-                $("#inputAuthor").val("");
-                $("#inputComment").val("");
-            } catch (error) {
-                console.error("댓글 작성 실패:", error);
-                alert("댓글 작성 중 오류가 발생했습니다.");
-            }
-        });
-
-        function loadComments(postId) {
-            const commentsContainer = $(".container.bg-light.text-dark.rounded.p-3.mb-2 div");
-            commentsContainer.empty();
-
-            const q = query(
-                collection(db, "comments"),
-                where("postId", "==", postId),
-                orderBy("timestamp", "desc")
-            );
-
-            onSnapshot(q, (snapshot) => {
-                commentsContainer.empty();
-
-                snapshot.forEach((doc) => {
-                    let comment = doc.data();
-                    let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
-
-                    let commentItem = `
                 <div class="border p-3 mb-2 bg-white rounded">
                 <img src="${img}" style="width: 30px; height: 30px; border-radius: 100px">
                     <strong>${comment.author}</strong>
@@ -417,15 +235,9 @@
   <div class="comment container bg-light text-dark rounded p-3">
     <form class="row g-3">
       <h4 class="mb-4">댓글 작성</h4>
-      <div class="comment_author">
-        <div>
-          <label for="inputAuthor" class="form-label">작성자</label>
-          <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
-        </div>
-        <div class="comment_author__box">
-          <label for="inputprofileImg" class="form-label">프로필 사진 URL</label>
-          <input type="text" class="form-control" id="inputprofileImg" placeholder="URL">
-        </div>
+      <div class="col-md-3">
+        <label for="inputAuthor" class="form-label">작성자</label>
+        <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
       </div>
       <div class="col-12">
         <label for="inputComment" class="form-label">내용</label>
@@ -437,29 +249,6 @@
     </form>
   </div>
 </div>
-    <div class="container py-5">
-        <div class="container bg-light text-dark rounded p-3 mb-2">
-            <h4 class="mb-4">댓글 목록</h4>
-            <div>
-            </div>
-        </div>
-        <div class="comment container bg-light text-dark rounded p-3">
-            <form class="row g-3">
-                <h4 class="mb-4">댓글 작성</h4>
-                <div class="col-md-3">
-                    <label for="inputAuthor" class="form-label">작성자</label>
-                    <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
-                </div>
-                <div class="col-12">
-                    <label for="inputComment" class="form-label">내용</label>
-                    <input type="text" class="form-control" id="inputComment" placeholder="댓글 작성">
-                </div>
-                <div class="col-12">
-                    <button id="commentbtn" type="button" class="btn btn-secondary">작성</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
 </body>
 
