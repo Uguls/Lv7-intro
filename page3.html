@@ -17,9 +17,8 @@
     }
     
     .inputgroup {
-      width: 1500px;
-      
-      margin: 200px auto 30px auto;
+      /*width: 1500px;*/
+      /*margin: 200px auto 30px auto;*/
       font-size: 25px;
     }
     
@@ -42,13 +41,10 @@
     .list {
       width: 1000px;
       height: auto;
-      
       margin-right: 3px;
-      
       background-color: transparent;
       color: white;
       border: none;
-      
       display: flex;
     }
     
@@ -61,6 +57,7 @@
       margin-top: 20px;
       margin-bottom: 30px;
     }
+    
   </style>
   
   <script type="module">
@@ -101,6 +98,7 @@
                         <img src="${image}" class="figure-img img-fluid rounded" id="image" alt="...">
                         <p class="name" id="name">${name}</p>
                     </figure>
+                    <div class="container bg-light text-dark rounded p-3 mb-2">
                     <div class="row mb-3">
                         <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
                         <p class="list text-dark" id="advantage">${advantage}</p>
@@ -117,6 +115,7 @@
                         <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
                         <p class="list text-dark" id="style">${style}</p>
                     </div>
+                  </div>
                 </div>`;
       $('#group').append(temp_html);
     }
@@ -206,7 +205,6 @@
     $(document).ready(function () {
       const urlParams = new URL(location.href).searchParams;
       const id = urlParams.get('id');
-      getData(id);
       loadComments(id);
     })
   
