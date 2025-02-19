@@ -2,100 +2,100 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상세페이지</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상세페이지</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-
-    <style>
-        .main {
-            background-color: black;
-            color: white
-        }
-
-        .inputgroup {
-            width: 1500px;
-
-            margin: 200px auto 30px auto;
-            font-size: 25px;
-        }
-
-        .figure {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .name {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            font-size: 40px;
-        }
-
-        .list {
-            width: 1000px;
-            height: auto;
-
-            margin-right: 3px;
-
-            background-color: transparent;
-            color: white;
-            border: none;
-
-            display: flex;
-        }
-
-        .mybtn {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
-    </style>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getDocs, query, where, limit, getDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
-            authDomain: "lv7-introduction.firebaseapp.com",
-            projectId: "lv7-introduction",
-            storageBucket: "lv7-introduction.firebasestorage.app",
-            messagingSenderId: "722530554104",
-            appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get("id");
-
-        async function loadMember() {
-            let docSnap = await getDoc(doc(db, "members", id));
-            let row = docSnap.data();
-
-            let image = row['image'];
-            let name = row['name'];
-            let advantage = row['advantage'];
-            let blog = row['blog'];
-            let mbti = row['mbti'];
-            let style = row['style'];
-
-            let temp_html = `
+  
+  
+  <style>
+    .main {
+      background-color: black;
+      color: white
+    }
+    
+    .inputgroup {
+      width: 1500px;
+      
+      margin: 200px auto 30px auto;
+      font-size: 25px;
+    }
+    
+    .figure {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .name {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      
+      font-size: 40px;
+    }
+    
+    .list {
+      width: 1000px;
+      height: auto;
+      
+      margin-right: 3px;
+      
+      background-color: transparent;
+      color: white;
+      border: none;
+      
+      display: flex;
+    }
+    
+    .mybtn {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+  </style>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getDocs, limit, getDoc, doc, deleteDoc, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
+      authDomain: "lv7-introduction.firebaseapp.com",
+      projectId: "lv7-introduction",
+      storageBucket: "lv7-introduction.firebasestorage.app",
+      messagingSenderId: "722530554104",
+      appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    
+    async function loadMember() {
+      let docSnap = await getDoc(doc(db, "members", id));
+      let row = docSnap.data();
+      
+      let image = row['image'];
+      let name = row['name'];
+      let advantage = row['advantage'];
+      let blog = row['blog'];
+      let mbti = row['mbti'];
+      let style = row['style'];
+      
+      let temp_html = `
                 <div>
                     <figure class="figure">
                         <img src="${image}" class="figure-img img-fluid rounded" id="image" alt="...">
@@ -118,40 +118,130 @@
                         <p class="list" id="style">${style}</p>
                     </div>
                 </div>`;
-            $('#group').append(temp_html);
-        }
-
-        async function deleteMember() {
-            if (!confirm("정말 삭제하시겠습니까?")) return;
-            try {
-                await deleteDoc(doc(db, "members", id));
-                alert("삭제되었습니다.");
-                window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
-            } catch (error) {
-                console.error("삭제 실패:", error);
-                alert("삭제 실패!");
-            }
-        }
-
-        loadMember();
-        document.querySelector("#btn").addEventListener("click", function () {
-            window.location.href = "index.html"; // 메인 페이지로 이동
+      $('#group').append(temp_html);
+    }
+    
+    async function deleteMember() {
+      if (!confirm("정말 삭제하시겠습니까?")) return;
+      try {
+        await deleteDoc(doc(db, "members", id));
+        alert("삭제되었습니다.");
+        window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
+      } catch (error) {
+        console.error("삭제 실패:", error);
+        alert("삭제 실패!");
+      }
+    }
+    
+    $("#commentbtn").click(async function () {
+      const urlParams = new URL(location.href).searchParams;
+      const id = urlParams.get('id');
+      
+      let author = $("#inputAuthor").val().trim();
+      let content = $("#inputComment").val().trim();
+      
+      if (!author || !content) {
+        alert("작성자와 내용을 입력하세요.");
+        return;
+      }
+      
+      try {
+        await addDoc(collection(db, "comments"), {
+          postId: id,
+          author: author,
+          content: content,
+          timestamp: new Date()
+        })
+        
+        alert("댓글이 작성되었습니다.");
+        $("#inputAuthor").val("");
+        $("#inputComment").val("");
+      } catch (error) {
+        console.error("댓글 작성 실패:", error);
+        alert("댓글 작성 중 오류가 발생했습니다.");
+      }
+    });
+    
+    function loadComments(postId) {
+      const commentsContainer = $(".container.bg-light.text-dark.rounded.p-3.mb-2 div");
+      commentsContainer.empty();
+      
+      const q = query(
+        collection(db, "comments"),
+        where("postId", "==", postId),
+        orderBy("timestamp", "desc")
+      );
+      
+      onSnapshot(q, (snapshot) => {
+        commentsContainer.empty();
+        
+        snapshot.forEach((doc) => {
+          let comment = doc.data();
+          let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
+          
+          let commentItem = `
+                <div class="border p-3 mb-2 bg-white rounded">
+                    <strong>${comment.author}</strong>
+                    <small class="text-muted">${timestamp}</small>
+                    <p>${comment.content}</p>
+                </div>
+            `;
+          
+          commentsContainer.append(commentItem);
         });
-
-        document.querySelector("#delete-btn").addEventListener("click", deleteMember);
-
-    </script>
+      });
+    }
+    
+    loadMember();
+    document.querySelector("#btn").addEventListener("click", function () {
+      window.location.href = "index.html"; // 메인 페이지로 이동
+    });
+    
+    document.querySelector("#delete-btn").addEventListener("click", deleteMember);
+    
+    $(document).ready(function () {
+      const urlParams = new URL(location.href).searchParams;
+      const id = urlParams.get('id');
+      getData(id);
+      loadComments(id);
+    })
+  
+  </script>
 </head>
 
 <body class="main">
-    <div class="inputgroup" id="group">
-    </div>
-    </div>
+<div class="inputgroup" id="group">
+</div>
+</div>
 
-    <div class="mybtn">
-        <button id="btn" type="button">목록</button>
-        <button id="delete-btn" class="delete-btn" type="button">삭제</button>
+<div class="mybtn">
+  <button id="btn" type="button">목록</button>
+  <button id="delete-btn" class="delete-btn" type="button">삭제</button>
+</div>
+
+<div class="container py-5">
+  <div class="container bg-light text-dark rounded p-3 mb-2">
+    <h4 class="mb-4">댓글 목록</h4>
+    <div>
     </div>
+  </div>
+  <div class="comment container bg-light text-dark rounded p-3">
+    <form class="row g-3">
+      <h4 class="mb-4">댓글 작성</h4>
+      <div class="col-md-3">
+        <label for="inputAuthor" class="form-label">작성자</label>
+        <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
+      </div>
+      <div class="col-12">
+        <label for="inputComment" class="form-label">내용</label>
+        <input type="text" class="form-control" id="inputComment" placeholder="댓글 작성">
+      </div>
+      <div class="col-12">
+        <button id="commentbtn" type="button" class="btn btn-primary">작성</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 </body>
 
