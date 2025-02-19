@@ -11,8 +11,8 @@
 
     <style>
         body {
-            background-color: #212529;
-            color: white;
+            background-color: #d2e5eb;
+            color: black;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -28,12 +28,16 @@
             width: 90%;
             max-width: 600px;
             padding: 25px;
-            border: 2px solid #6c757d;
+            /* border: 2px solid black; */
             border-radius: 10px;
-            background-color: #343a40;
+            background-color: white;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
 
+        .input-group {
+            position: relative;
+        }
+        
         .form-label {
             color: #f8f9fa;
             font-weight: bold;
@@ -51,7 +55,7 @@
         }
 
         .btn-custom {
-            background-color: #f8f9fa;
+            background-color: #badbe6;
             color: #212529;
             font-weight: bold;
             padding: 12px;
@@ -61,7 +65,7 @@
         }
 
         .btn-custom:hover {
-            background-color: #e2e6ea;
+            background-color: #a6d6e5;
             transform: scale(1.05);
         }
 
@@ -73,9 +77,6 @@
             color: #6c757d;
         }
 
-        .input-group {
-            position: relative;
-        }
 
         .input-group input {
             padding-left: 35px;
@@ -102,7 +103,6 @@
             messagingSenderId: "722530554104",
             appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
         };
-
         // 파이어베이스 앱 초기화
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -110,12 +110,10 @@
         // 데이터 가져오기
         async function getData(id) {
             if (!id) return;
-
             // 멤버 데이터 가져오기기
             try {
                 const docRef = doc(db, "members", id);
                 const docSnap = await getDoc(docRef);
-
                 // 데이터 유무 검사사
                 if (docSnap.exists()) {
                     const member = docSnap.data();
@@ -138,7 +136,6 @@
             // URL 파라미터,ID 가져오기
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
-
             // ID값의 유무에 따라 텍스트가 바뀌는 조건 부여
             if (id) {
                 $("#savePost").text("수정");
@@ -153,7 +150,6 @@
             } else {
                 $("#team").text("팀원 추가");
             }
-
             // 이미지 URL 입력시 미리보기
             $("#image").on("input", function () {
                 const imageUrl = $(this).val();
@@ -164,13 +160,11 @@
                 }
             });
         });
-
         // 저장 버튼 클릭시
         $("#savePost").click(async function () {
             const urlParams = new URL(location.href).searchParams;
             const id = urlParams.get('id');
-
-            // 입력값 가져오기기
+            // 입력값 가져오기
             let image = $('#image').val();
             let name = $('#name').val();
             let mbti = $('#mbti').val();
@@ -178,13 +172,12 @@
             let style = $('#style').val();
             let blog = $('#blog').val();
 
-            // 필드 유무 검사사
+            // 필드 유무 검사
             if (!name || !mbti || !advantage || !style || !blog || !image) {
                 alert("모든 필드를 입력해주세요!");
                 return;
             }
-
-            // 데이터 객체 생성성
+            // 데이터 객체 생성
             let docData = {
                 'image': image,
                 'name': name,
@@ -193,8 +186,7 @@
                 'style': style,
                 'blog': blog
             };
-
-            // ID값의 유무에 따라 추가 또는 수정
+            // 데이터 추가 또는 수정
             try {
                 if (id) {
                     const docRef = doc(db, "members", id);
@@ -204,6 +196,7 @@
                     await addDoc(collection(db, "members"), docData);
                     alert('추가 완료!');
                 }
+                // 성공하면 메인 페이지로 이동
                 window.location.href = "index.html";
             } catch (error) {
                 console.error("오류 발생:", error);
@@ -215,8 +208,8 @@
 
 <body>
     <div class="container py-5 d-flex flex-column align-items-center">
-        <h1 class="title text-center" id="team">팀원 추가</h1>
         <div class="form-container">
+            <h1 class="title text-center" id="team">팀원 추가</h1>
             <form id="memberForm">
                 <div class="mb-3 input-group">
                     <i class="form-icon bi bi-person-fill"></i>
