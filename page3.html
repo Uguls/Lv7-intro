@@ -64,158 +64,236 @@
     import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
     import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
     import { getDocs, limit, getDoc, doc, deleteDoc, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-    
+
     const firebaseConfig = {
-      apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
-      authDomain: "lv7-introduction.firebaseapp.com",
-      projectId: "lv7-introduction",
-      storageBucket: "lv7-introduction.firebasestorage.app",
-      messagingSenderId: "722530554104",
-      appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
+        apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
+        authDomain: "lv7-introduction.firebaseapp.com",
+        projectId: "lv7-introduction",
+        storageBucket: "lv7-introduction.firebasestorage.app",
+        messagingSenderId: "722530554104",
+        appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
     };
-    
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    
+
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
-    
+
     async function loadMember() {
-      let docSnap = await getDoc(doc(db, "members", id));
-      let row = docSnap.data();
-      
-      let image = row['image'];
-      let name = row['name'];
-      let advantage = row['advantage'];
-      let blog = row['blog'];
-      let mbti = row['mbti'];
-      let style = row['style'];
-      
-      let temp_html = `
-                <div>
-                    <figure class="figure">
-                        <img src="${image}" class="figure-img" id="image" alt="...">
-                        <p class="name" id="name">${name}</p>
-                    </figure>
-                    <div class="container bg-light text-dark rounded p-3 mb-2">
-                    <div class="row mb-3">
-                        <label for="inputstyle" class="label">MBTI</label>
-                        <label for="inputblogaddr" class="label2">|</label>
-                        <p class="list_text" id="mbti">${mbti}</p>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputtag" class="label">장점</label>
-                        <label for="inputblogaddr" class="label2">|</label>
-                        <p class="list_text" id="advantage">${advantage}</p>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputblogaddr" class="label">협업스타일</label>
-                        <label for="inputblogaddr" class="label2">|</label>
-                        <p class="list_text" id="style">${style}</p>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputgoods" class="label">blog</label>
-                        <label for="inputblogaddr" class="label2">|</label>
-                        <p class="list_text" id="blog">${blog}</p>
-                    </div>
-                  </div>
-                </div>`;
-      $('#group').append(temp_html);
+        let docSnap = await getDoc(doc(db, "members", id));
+        let row = docSnap.data();
+
+        let image = row['image'];
+        let name = row['name'];
+        let advantage = row['advantage'];
+        let blog = row['blog'];
+        let mbti = row['mbti'];
+        let style = row['style'];
+
+        let temp_html = `
+            <div>
+                <figure class="figure">
+                    <img src="${image}" class="figure-img" id="image" alt="...">
+                    <p class="name" id="name">${name}</p>
+                </figure>
+                <div class="container bg-light text-dark rounded p-3 mb-2">
+                <div class="row mb-3">
+                    <label for="inputstyle" class="label">MBTI</label>
+                    <label for="inputblogaddr" class="label2">|</label>
+                    <p class="list_text" id="mbti">${mbti}</p>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputtag" class="label">장점</label>
+                    <label for="inputblogaddr" class="label2">|</label>
+                    <p class="list_text" id="advantage">${advantage}</p>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputblogaddr" class="label">협업스타일</label>
+                    <label for="inputblogaddr" class="label2">|</label>
+                    <p class="list_text" id="style">${style}</p>
+                </div>
+                <div class="row mb-3">
+                    <label for="inputgoods" class="label">blog</label>
+                    <label for="inputblogaddr" class="label2">|</label>
+                    <p class="list_text" id="blog">${blog}</p>
+                </div>
+              </div>
+            </div>`;
+        $('#group').append(temp_html);
     }
-    
+
     async function deleteMember() {
-      if (!confirm("정말 삭제하시겠습니까?")) return;
-      try {
-        await deleteDoc(doc(db, "members", id));
-        alert("삭제되었습니다.");
-        window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
-      } catch (error) {
-        console.error("삭제 실패:", error);
-        alert("삭제 실패!");
-      }
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+        try {
+            await deleteDoc(doc(db, "members", id));
+            alert("삭제되었습니다.");
+            window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
+        } catch (error) {
+            console.error("삭제 실패:", error);
+            alert("삭제 실패!");
+        }
     }
-    
+
     $("#commentbtn").click(async function () {
-      const urlParams = new URL(location.href).searchParams;
-      const id = urlParams.get('id');
-      
-      let author = $("#inputAuthor").val().trim();
-      let content = $("#inputComment").val().trim();
-      let inputProfileImg = $("#inputComment").val().trim();
-      
-      if (!author || !content) {
-        alert("작성자와 내용을 입력하세요.");
-        return;
-      }
-      
-      try {
-        await addDoc(collection(db, "comments"), {
-          postId: id,
-          author: author,
-          content: content,
-          timestamp: new Date()
-        })
-        alert("댓글이 작성되었습니다.");
-        $("#inputAuthor").val("");
-        $("#inputComment").val("");
-        $("#inputProfileImg").val("");
-      } catch (error) {
-        console.error("댓글 작성 실패:", error);
-        alert("댓글 작성 중 오류가 발생했습니다.");
-      }
+        const urlParams = new URL(location.href).searchParams;
+        const id = urlParams.get('id');
+
+        let author = $("#inputAuthor").val().trim();
+        let content = $("#inputComment").val().trim();
+        let inputProfileImg = $("#inputComment").val().trim();
+
+        if (!author || !content) {
+            alert("작성자와 내용을 입력하세요.");
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, "comments"), {
+                postId: id,
+                author: author,
+                content: content,
+                timestamp: new Date()
+            })
+            alert("댓글이 작성되었습니다.");
+            $("#inputAuthor").val("");
+            $("#inputComment").val("");
+            $("#inputProfileImg").val("");
+        } catch (error) {
+            console.error("댓글 작성 실패:", error);
+            alert("댓글 작성 중 오류가 발생했습니다.");
+        }
     });
-    
+
+    function loadReplies(commentId, replyContainer) {
+        const q = query(
+            collection(db, "replies"),
+            where("commentId", "==", commentId),
+            orderBy("timestamp", "desc")
+        );
+
+        onSnapshot(q, (snapshot) => {
+            replyContainer.empty();
+
+            snapshot.forEach((doc) => {
+                let reply = doc.data();
+                let timestamp = reply.timestamp ? new Date(reply.timestamp.toDate()).toLocaleString() : "방금 전";
+                let replyItem = `
+                    <div class="border p-2 ms-4 bg-light rounded">
+                        <strong>${reply.author}</strong>
+                        <small class="text-muted">${timestamp}</small>
+                        <p>${reply.content}</p>
+                    </div>
+                `;
+                replyContainer.append(replyItem);
+            });
+        });
+    }
+
     function loadComments(postId) {
-      const commentsContainer = $(".container.bg-light.text-dark.rounded.p-3.mb-2 div");
-      commentsContainer.empty();
-      
-      const q = query(
-        collection(db, "comments"),
-        where("postId", "==", postId),
-        orderBy("timestamp", "desc")
-      );
-      
-      onSnapshot(q, (snapshot) => {
+        const commentsContainer = $(".container.bg-light.text-dark.rounded.p-3.mb-2 div");
         commentsContainer.empty();
-        
-        snapshot.forEach((doc) => {
-          let comment = doc.data();
-          let commentId = doc.id;
-          let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
-          let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
-          
-          let commentItem = `
-                <div class="border p-3 mb-2 bg-white rounded" id="${commentId}">
+
+        const q = query(
+            collection(db, "comments"),
+            where("postId", "==", postId),
+            orderBy("timestamp", "desc")
+        );
+
+        onSnapshot(q, (snapshot) => {
+            commentsContainer.empty();
+
+            snapshot.forEach((doc) => {
+                let comment = doc.data();
+                let commentId = doc.id;
+                let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
+                let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
+
+                let replyContainer = $(`<div id="replyContainer-${commentId}" class="ms-4"></div>`);  // 고유 id 추가
+
+                let commentItem = `
+                    <div class="border p-3 mb-2 bg-white rounded" id="${commentId}">
                     <img src="${img}" style="width: 30px; height: 30px; border-radius: 100px" onerror="this.onerror=null; this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s';">
                     <strong>${comment.author}</strong>
                     <small class="text-muted">${timestamp}</small>
                     <p>${comment.content}</p>
-                </div>
-            `;
+                    <button class="btn btn-sm btn-outline-secondary reply-btn" data-id="${commentId}">답글</button>
+                    <div class="reply-form" id="replyForm-${commentId}" style="display: none;">
+                        <input type="text" id="replyAuthor-${commentId}" placeholder="작성자" class="form-control mb-1">
+                        <input type="text" id="replyContent-${commentId}" placeholder="답글 작성" class="form-control mb-1">
+                        <button class="btn btn-sm btn-secondary" id="replyBtn-${commentId}">작성</button>
+                    </div>
+                    </div>
+                    `;
+                commentsContainer.append(commentItem);
+                commentsContainer.append(replyContainer);
 
-                    commentsContainer.append(commentItem);
+                loadReplies(commentId, replyContainer);  // 답글 불러오기
+
+                // 답글 폼 토글
+                document.querySelector(`.reply-btn[data-id='${commentId}']`).addEventListener('click', function () {
+                    let replyForm = document.querySelector(`#replyForm-${commentId}`);
+                    replyForm.style.display = (replyForm.style.display === 'block') ? 'none' : 'block';
+                });
+
+                // 답글 작성 버튼 클릭
+                document.querySelector(`#replyBtn-${commentId}`).addEventListener('click', function () {
+                    addReply(commentId);
                 });
             });
+        });
+    }
+
+    async function addReply(commentId) {
+        const urlParams = new URL(location.href).searchParams;
+        const id = urlParams.get('id');
+
+        let author = $(`#replyAuthor-${commentId}`).val().trim();
+        let content = $(`#replyContent-${commentId}`).val().trim();
+
+        if (!author || !content) {
+            alert("작성자와 내용을 입력하세요.");
+            return;
         }
 
-        loadMember();
-        document.querySelector("#btn").addEventListener("click", function () {
-            window.location.href = "index.html"; // 메인 페이지로 이동
-        });
+        try {
+            await addDoc(collection(db, "replies"), {
+                commentId: commentId,
+                author: author,
+                content: content,
+                timestamp: new Date()
+            });
 
-        document.querySelector("#delete-btn").addEventListener("click", deleteMember);
+            alert("답글이 작성되었습니다.");
+            $(`#replyAuthor-${commentId}`).val("");
+            $(`#replyContent-${commentId}`).val("");
 
-        document.querySelector("#edit-btn").addEventListener("click", function () {
-            window.location.href = `create.html?id=${id}`; // 수정 페이지로 이동
-        });
+            let replyContainer = $(`#replyContainer-${commentId}`);
+            loadReplies(commentId, replyContainer);
+        } catch (error) {
+            console.error("답글 작성 실패:", error);
+            alert("답글 작성 중 오류가 발생했습니다.");
+        }
+    }
 
-        $(document).ready(function () {
-            const urlParams = new URL(location.href).searchParams;
-            const id = urlParams.get('id');
-            loadComments(id);
-        })
+    loadMember();
+    document.querySelector("#btn").addEventListener("click", function () {
+        window.location.href = "index.html"; // 메인 페이지로 이동
+    });
 
-    </script>
+    document.querySelector("#delete-btn").addEventListener("click", deleteMember);
+
+    document.querySelector("#edit-btn").addEventListener("click", function () {
+        window.location.href = `create.html?id=${id}`; // 수정 페이지로 이동
+    });
+
+    $(document).ready(function () {
+        const urlParams = new URL(location.href).searchParams;
+        const id = urlParams.get('id');
+        loadComments(id);
+    })
+</script>
+
 </head>
 
 <body class="main text-dark">
