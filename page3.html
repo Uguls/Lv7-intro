@@ -88,14 +88,13 @@
             border: none;
             font-size: 18px;
         }
-        
     </style>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getDocs, limit, getDoc, doc, deleteDoc, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getDocs, limit, getDoc, doc, deleteDoc, onSnapshot, query, where, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
@@ -152,103 +151,104 @@
                     </div>
                   </div>
                 </div>`;
-      $('#group').append(temp_html);
-    }
-
-    async function deleteMember() {
-        if (!confirm("정말 삭제하시겠습니까?")) return;
-        try {
-            await deleteDoc(doc(db, "members", id));
-            alert("삭제되었습니다.");
-            window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
-        } catch (error) {
-            console.error("삭제 실패:", error);
-            alert("삭제 실패!");
-        }
-    }
-
-    $("#commentbtn").click(async function () {
-        const urlParams = new URL(location.href).searchParams;
-        const id = urlParams.get('id');
-
-        let author = $("#inputAuthor").val().trim();
-        let content = $("#inputComment").val().trim();
-        let inputProfileImg = $("#inputComment").val().trim();
-
-        if (!author || !content) {
-            alert("작성자와 내용을 입력하세요.");
-            return;
+            $('#group').append(temp_html);
         }
 
-        try {
-            await addDoc(collection(db, "comments"), {
-                postId: id,
-                author: author,
-                content: content,
-                timestamp: new Date()
-            })
-            alert("댓글이 작성되었습니다.");
-            $("#inputAuthor").val("");
-            $("#inputComment").val("");
-            $("#inputProfileImg").val("");
-        } catch (error) {
-            console.error("댓글 작성 실패:", error);
-            alert("댓글 작성 중 오류가 발생했습니다.");
+        async function deleteMember() {
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+            try {
+                await deleteDoc(doc(db, "members", id));
+                alert("삭제되었습니다.");
+                window.location.href = "index.html"; // 삭제 후 메인 페이지로 이동
+            } catch (error) {
+                console.error("삭제 실패:", error);
+                alert("삭제 실패!");
+            }
         }
-    });
 
-    function loadReplies(commentId, replyContainer) {
-        const q = query(
-            collection(db, "replies"),
-            where("commentId", "==", commentId),
-            orderBy("timestamp", "desc")
-        );
+        $("#commentbtn").click(async function () {
+            const urlParams = new URL(location.href).searchParams;
+            const id = urlParams.get('id');
 
-        onSnapshot(q, (snapshot) => {
-            replyContainer.empty();
+            let author = $("#inputAuthor").val().trim();
+            let content = $("#inputComment").val().trim();
+            let inputProfileImg = $("#inputComment").val().trim();
 
-            snapshot.forEach((doc) => {
-                let reply = doc.data();
-                let timestamp = reply.timestamp ? new Date(reply.timestamp.toDate()).toLocaleString() : "방금 전";
-                let replyItem = `
+            if (!author || !content) {
+                alert("작성자와 내용을 입력하세요.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "comments"), {
+                    postId: id,
+                    author: author,
+                    content: content,
+                    timestamp: new Date()
+                })
+                alert("댓글이 작성되었습니다.");
+                $("#inputAuthor").val("");
+                $("#inputComment").val("");
+                $("#inputProfileImg").val("");
+            } catch (error) {
+                console.error("댓글 작성 실패:", error);
+                alert("댓글 작성 중 오류가 발생했습니다.");
+            }
+        });
+
+        function loadReplies(commentId, replyContainer) {
+            const q = query(
+                collection(db, "replies"),
+                where("commentId", "==", commentId),
+                orderBy("timestamp", "desc")
+            );
+
+            onSnapshot(q, (snapshot) => {
+                replyContainer.empty();
+
+                snapshot.forEach((doc) => {
+                    let reply = doc.data();
+                    let timestamp = reply.timestamp ? new Date(reply.timestamp.toDate()).toLocaleString() : "방금 전";
+                    let replyItem = `
                     <div class="border p-2 ms-4 bg-light rounded">
                         <strong>${reply.author}</strong>
                         <small class="text-muted">${timestamp}</small>
                         <p>${reply.content}</p>
                     </div>
                 `;
-                replyContainer.append(replyItem);
+                    replyContainer.append(replyItem);
+                });
             });
-        });
-    }
+        }
 
-    function loadComments(postId) {
-        const commentsContainer = $(".container.bg-light.text-dark.rounded.p-3.mb-2 div");
-        commentsContainer.empty();
-
-        const q = query(
-            collection(db, "comments"),
-            where("postId", "==", postId),
-            orderBy("timestamp", "desc")
-        );
-
-        onSnapshot(q, (snapshot) => {
+        function loadComments(postId) {
+            const commentsContainer = $(".container.bg-light.text-dark.rounded.p-3.mb-2 div");
             commentsContainer.empty();
 
-            snapshot.forEach((doc) => {
-                let comment = doc.data();
-                let commentId = doc.id;
-                let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
-                let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
+            const q = query(
+                collection(db, "comments"),
+                where("postId", "==", postId),
+                orderBy("timestamp", "desc")
+            );
 
-                let replyContainer = $(`<div id="replyContainer-${commentId}" class="ms-4"></div>`);  // 고유 id 추가
+            onSnapshot(q, (snapshot) => {
+                commentsContainer.empty();
 
-                let commentItem = `
+                snapshot.forEach((doc) => {
+                    let comment = doc.data();
+                    let commentId = doc.id;
+                    let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
+                    let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
+
+                    let replyContainer = $(`<div id="replyContainer-${commentId}" class="ms-4"></div>`);  // 고유 id 추가
+
+                    let commentItem = `
                     <div class="border p-3 mb-2 bg-white rounded" id="${commentId}">
                     <img src="${img}" style="width: 30px; height: 30px; border-radius: 100px" onerror="this.onerror=null; this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s';">
                     <strong>${comment.author}</strong>
                     <small class="text-muted">${timestamp}</small>
                     <button id="comdelbtn" type="button" class="commentdelbtn">x</button>
+                    <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${commentId}">수정</button>
                     <p>${comment.content}</p>                    
                     <button class="btn btn-sm btn-outline-secondary reply-btn" data-id="${commentId}">답글</button>
                     <div class="reply-form" id="replyForm-${commentId}" style="display: none;">
@@ -258,67 +258,102 @@
                     </div>
                     </div>
                     `;
-                commentsContainer.append(commentItem);
-                commentsContainer.append(replyContainer);
+                    commentsContainer.append(commentItem);
+                    commentsContainer.append(replyContainer);
 
-                loadReplies(commentId, replyContainer);  // 답글 불러오기
+                    loadReplies(commentId, replyContainer);  // 답글 불러오기
 
-                // 답글 폼 토글
-                document.querySelector(`.reply-btn[data-id='${commentId}']`).addEventListener('click', function () {
-                    let replyForm = document.querySelector(`#replyForm-${commentId}`);
-                    replyForm.style.display = (replyForm.style.display === 'block') ? 'none' : 'block';
+                    // 답글 폼 토글
+                    document.querySelector(`.reply-btn[data-id='${commentId}']`).addEventListener('click', function () {
+                        let replyForm = document.querySelector(`#replyForm-${commentId}`);
+                        replyForm.style.display = (replyForm.style.display === 'block') ? 'none' : 'block';
+                    });
+
+                    // 답글 작성 버튼 클릭
+                    document.querySelector(`#replyBtn-${commentId}`).addEventListener('click', function () {
+                        addReply(commentId);
+                    });
                 });
+            });
+        }
 
-                // 답글 작성 버튼 클릭
-                document.querySelector(`#replyBtn-${commentId}`).addEventListener('click', function () {
-                    addReply(commentId);
-                });
+        $(document).on("click", ".edit-btn", function () {
+            let commentId = $(this).data("id");
+            let commentDiv = $(this).closest(".border.p-3.mb-2.bg-white.rounded");
+            let commentText = commentDiv.find("p").text();
+
+            let inputField = $(`<input type='text' class='form-control edit-input' value='${commentText}'>`);
+            let saveButton = $(`<button class='btn btn-sm btn-secondary save-btn'>저장</button>`); // 여기서 btn-success를 btn-secondary로 변경
+            let editButton = $(this);
+
+            commentDiv.find("p").replaceWith(inputField);
+            editButton.replaceWith(saveButton);
+
+            saveButton.click(async function () {
+                let updatedText = inputField.val().trim();
+                if (!updatedText) {
+                    alert("내용을 입력해주세요.");
+                    return;
+                }
+
+                try {
+                    await updateDoc(doc(db, "comments", commentId), {
+                        content: updatedText
+                    });
+
+                    let commentContent = $(`<p class='comment-content'>${updatedText}</p>`);
+                    inputField.replaceWith(commentContent);
+                    saveButton.replaceWith(editButton);
+                } catch (error) {
+                    console.error("댓글 수정 실패:", error);
+                    alert("댓글 수정 중 오류가 발생했습니다.");
+                }
             });
         });
-    }
 
-    async function addReply(commentId) {
-        const urlParams = new URL(location.href).searchParams;
-        const id = urlParams.get('id');
 
-        let author = $(`#replyAuthor-${commentId}`).val().trim();
-        let content = $(`#replyContent-${commentId}`).val().trim();
+        async function addReply(commentId) {
+            const urlParams = new URL(location.href).searchParams;
+            const id = urlParams.get('id');
 
-        if (!author || !content) {
-            alert("작성자와 내용을 입력하세요.");
-            return;
+            let author = $(`#replyAuthor-${commentId}`).val().trim();
+            let content = $(`#replyContent-${commentId}`).val().trim();
+
+            if (!author || !content) {
+                alert("작성자와 내용을 입력하세요.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "replies"), {
+                    commentId: commentId,
+                    author: author,
+                    content: content,
+                    timestamp: new Date()
+                });
+
+                alert("답글이 작성되었습니다.");
+                $(`#replyAuthor-${commentId}`).val("");
+                $(`#replyContent-${commentId}`).val("");
+
+                let replyContainer = $(`#replyContainer-${commentId}`);
+                loadReplies(commentId, replyContainer);
+            } catch (error) {
+                console.error("답글 작성 실패:", error);
+                alert("답글 작성 중 오류가 발생했습니다.");
+            }
         }
 
-        try {
-            await addDoc(collection(db, "replies"), {
-                commentId: commentId,
-                author: author,
-                content: content,
-                timestamp: new Date()
-            });
+        loadMember();
+        document.querySelector("#btn").addEventListener("click", function () {
+            window.location.href = "index.html"; // 메인 페이지로 이동
+        });
 
-            alert("답글이 작성되었습니다.");
-            $(`#replyAuthor-${commentId}`).val("");
-            $(`#replyContent-${commentId}`).val("");
+        document.querySelector("#delete-btn").addEventListener("click", deleteMember);
 
-            let replyContainer = $(`#replyContainer-${commentId}`);
-            loadReplies(commentId, replyContainer);
-        } catch (error) {
-            console.error("답글 작성 실패:", error);
-            alert("답글 작성 중 오류가 발생했습니다.");
-        }
-    }
-
-    loadMember();
-    document.querySelector("#btn").addEventListener("click", function () {
-        window.location.href = "index.html"; // 메인 페이지로 이동
-    });
-
-    document.querySelector("#delete-btn").addEventListener("click", deleteMember);
-
-    document.querySelector("#edit-btn").addEventListener("click", function () {
-        window.location.href = `create.html?id=${id}`; // 수정 페이지로 이동
-    });
+        document.querySelector("#edit-btn").addEventListener("click", function () {
+            window.location.href = `create.html?id=${id}`; // 수정 페이지로 이동
+        });
 
         $(document).ready(function () {
             const urlParams = new URL(location.href).searchParams;
@@ -336,7 +371,7 @@
                 // const urlParams = new URLSearchParams(window.location.search);
                 // const id = urlParams.get('id');
                 await deleteDoc(doc(db, "comments", id));
-                
+
                 alert('댓글이 삭제되었습니다');
                 window.location.reload();
             })
@@ -356,35 +391,35 @@
         <button id="delete-btn" type="button" class="btn btn-secondary">삭제</button>
     </div>
 
-<div class="container py-5">
-  <div class="container bg-light text-dark rounded p-3 mb-2">
-    <h4 class="mb-4">댓글 목록</h4>
-    <div>
+    <div class="container py-5">
+        <div class="container bg-light text-dark rounded p-3 mb-2">
+            <h4 class="mb-4">댓글 목록</h4>
+            <div>
+            </div>
+        </div>
+        <div class="comment container bg-light text-dark rounded p-3">
+            <form class="row g-3">
+                <h4 class="mb-4">댓글 작성</h4>
+                <div style="display: flex;">
+                    <div>
+                        <label for="inputAuthor" class="form-label">작성자</label>
+                        <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
+                    </div>
+                    <div style="width: 100%; margin-left: 5px">
+                        <label for="inputProfileImg" class="form-label">프로필 사진</label>
+                        <input type="text" class="form-control" id="inputProfileImg" placeholder="URL">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label for="inputComment" class="form-label">내용</label>
+                    <input type="text" class="form-control" id="inputComment" placeholder="댓글 작성">
+                </div>
+                <div class="col-12">
+                    <button id="commentbtn" type="button" class="btn btn-secondary">작성</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
-  <div class="comment container bg-light text-dark rounded p-3">
-    <form class="row g-3">
-      <h4 class="mb-4">댓글 작성</h4>
-      <div style="display: flex;">
-        <div>
-          <label for="inputAuthor" class="form-label">작성자</label>
-          <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
-        </div>
-        <div style="width: 100%; margin-left: 5px">
-          <label for="inputProfileImg" class="form-label">프로필 사진</label>
-          <input type="text" class="form-control" id="inputProfileImg" placeholder="URL">
-        </div>
-      </div>
-      <div class="col-12">
-        <label for="inputComment" class="form-label">내용</label>
-        <input type="text" class="form-control" id="inputComment" placeholder="댓글 작성">
-      </div>
-      <div class="col-12">
-        <button id="commentbtn" type="button" class="btn btn-secondary">작성</button>
-      </div>
-    </form>
-  </div>
-</div>
 
 </body>
 
