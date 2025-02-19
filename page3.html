@@ -201,7 +201,7 @@
             const q = query(
                 collection(db, "replies"),
                 where("commentId", "==", commentId),
-                orderBy("timestamp", "desc")
+                orderBy("timestamp") //desc 삭제
             );
 
             onSnapshot(q, (snapshot) => {
@@ -216,6 +216,7 @@
                         <strong>${reply.author}</strong>
                         <small class="text-muted">${timestamp}</small>
                         <button id="replydelbtn" type="button" class="commentdelbtn">x</button>
+                        <button class="btn btn-sm btn-outline-primary edit-reply-btn" data-id="${id}">수정</button>
                         <p>${reply.content}</p>
                     </div>
                 `;
@@ -231,7 +232,7 @@
             const q = query(
                 collection(db, "comments"),
                 where("postId", "==", postId),
-                orderBy("timestamp", "desc")
+                orderBy("timestamp") // desc 삭제
             );
 
             onSnapshot(q, (snapshot) => {
@@ -314,6 +315,40 @@
             });
         });
 
+        $(document).on("click", ".edit-reply-btn", function () {
+            let replyId = $(this).data("id");
+            let replyDiv = $(this).closest(".border.p-2.ms-4.bg-light.rounded");
+            let replyText = replyDiv.find("p").text();
+
+            let inputField = $(`<input type='text' class='form-control edit-input' value='${replyText}'>`);
+            let saveButton = $(`<button class='btn btn-sm btn-secondary save-reply-btn'>저장</button>`);
+            let editButton = $(this);
+
+            replyDiv.find("p").replaceWith(inputField);
+            editButton.replaceWith(saveButton);
+
+            saveButton.click(async function () {
+                let updatedText = inputField.val().trim();
+                if (!updatedText) {
+                    alert("내용을 입력해주세요.");
+                    return;
+                }
+
+                try {
+                    await updateDoc(doc(db, "replies", replyId), {
+                        content: updatedText
+                    });
+
+                    let replyContent = $(`<p class='reply-content'>${updatedText}</p>`);
+                    inputField.replaceWith(replyContent);
+                    saveButton.replaceWith(editButton);
+                } catch (error) {
+                    console.error("답글 수정 실패:", error);
+                    alert("답글 수정 중 오류가 발생했습니다.");
+                }
+            });
+        });
+
 
         async function addReply(commentId) {
             const urlParams = new URL(location.href).searchParams;
@@ -368,11 +403,17 @@
         //댓글 삭제
         $(document).ready(function () {
             $(document).on("click", '#comdelbtn', async function () {
-                let id = $("#comdelbtn").parent().attr("id");
+                let id = $(this).parent().attr("id"); // "#comdelbtn" 대신에 this 넣음(가장 위에 위치한 댓글만 삭제되는 오류 해결)
                 await deleteDoc(doc(db, "comments", id));
-                
+                console.log(id)
                 alert('댓글이 삭제되었습니다');
                 window.location.reload();
+            })
+            $(document).on("click", '#replydelbtn', async function () {
+              let id = $(this).parent().attr("id"); // "#replydelbtn" 대신에 this 넣음(가장 위에 위치한 댓글만 삭제되는 오류 해결)
+              await deleteDoc(doc(db, "replies", id));
+              alert('댓글이 삭제되었습니다');
+              window.location.reload();
             })
         })
 
