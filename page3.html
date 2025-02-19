@@ -22,11 +22,31 @@
             font-size: 25px;
         }
 
+        .list_text {
+           width: auto;
+        }
+
         .figure {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+        }
+
+        .figure-img {
+            margin-top: 10px;
+            width: 500px;
+            height: 500px;
+            object-fit: cover;
+        }
+
+
+        .label {
+            width: 150px;
+        }
+        
+        .label2 {
+            width : 3px;
         }
 
         .name {
@@ -94,25 +114,29 @@
             let temp_html = `
                 <div>
                     <figure class="figure">
-                        <img src="${image}" class="figure-img img-fluid rounded" id="image" alt="...">
+                        <img src="${image}" class="figure-img" id="image" alt="...">
                         <p class="name" id="name">${name}</p>
                     </figure>
                     <div class="container bg-light text-dark rounded p-3 mb-2">
-                        <div class="row mb-3">
-                            <label for="inputstyle" class="col-sm-2 col-form-label">MBTI</label>
-                            <p class="list text-dark" id="mbti">${mbti}</p>
-                        </div>
                     <div class="row mb-3">
-                        <label for="inputtag" class="col-sm-2 col-form-label">장점</label>
-                        <p class="list text-dark" id="advantage">${advantage} placeholder="Example input placeholder"</p>
+                        <label for="inputstyle" class="label">MBTI</label>
+                        <label for="inputblogaddr" class="label2">|</label>
+                        <p class="list_text" id="mbti">${mbti}</p>
                     </div>
                     <div class="row mb-3">
-                        <label for="inputblogaddr" class="col-sm-2 col-form-label">협업스타일</label>
-                        <p class="list text-dark" id="style">${style}</p>
+                        <label for="inputtag" class="label">장점</label>
+                        <label for="inputblogaddr" class="label2">|</label>
+                        <p class="list_text" id="advantage">${advantage}</p>
                     </div>
                     <div class="row mb-3">
-                        <label for="inputgoods" class="col-sm-2 col-form-label">blog</label>
-                        <p class="list text-dark" id="blog">${blog}</p>
+                        <label for="inputblogaddr" class="label">협업스타일</label>
+                        <label for="inputblogaddr" class="label2">|</label>
+                        <p class="list_text" id="style">${style}</p>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="inputgoods" class="label">blog</label>
+                        <label for="inputblogaddr" class="label2">|</label>
+                        <p class="list_text" id="blog">${blog}</p>
                     </div>
                   </div>
                 </div>`;
