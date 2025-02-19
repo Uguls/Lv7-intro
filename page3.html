@@ -172,7 +172,7 @@
 
             let author = $("#inputAuthor").val().trim();
             let content = $("#inputComment").val().trim();
-            let inputProfileImg = $("#inputComment").val().trim();
+            let profileImg = $("#inputProfileImg").val();
 
             if (!author || !content) {
                 alert("작성자와 내용을 입력하세요.");
@@ -184,6 +184,7 @@
                     postId: id,
                     author: author,
                     content: content,
+                    profileImg: profileImg,
                     timestamp: new Date()
                 })
                 alert("댓글이 작성되었습니다.");
@@ -369,14 +370,9 @@
             $(document).on("click", '#comdelbtn', async function () {
                 let id = $("#comdelbtn").parent().attr("id");
                 await deleteDoc(doc(db, "comments", id));
+                
                 alert('댓글이 삭제되었습니다');
                 window.location.reload();
-            })
-            $(document).on("click", '#replydelbtn', async function () {
-              let id = $("#replydelbtn").parent().attr("id");
-              await deleteDoc(doc(db, "replies", id));
-              alert('댓글이 삭제되었습니다');
-              window.location.reload();
             })
         })
 
