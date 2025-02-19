@@ -58,6 +58,16 @@
       margin-bottom: 30px;
     }
     
+    .comment_author {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    
+    .comment_author__box {
+      width: 100%;
+    }
+    
   </style>
   
   <script type="module">
@@ -138,6 +148,7 @@
       
       let author = $("#inputAuthor").val().trim();
       let content = $("#inputComment").val().trim();
+      let profileImg = $("#inputprofileImg").val() || "";
       
       if (!author || !content) {
         alert("작성자와 내용을 입력하세요.");
@@ -149,12 +160,14 @@
           postId: id,
           author: author,
           content: content,
+          profileImg: profileImg,
           timestamp: new Date()
         })
         
         alert("댓글이 작성되었습니다.");
         $("#inputAuthor").val("");
         $("#inputComment").val("");
+        $("#inputprofileImg").val("");
       } catch (error) {
         console.error("댓글 작성 실패:", error);
         alert("댓글 작성 중 오류가 발생했습니다.");
@@ -176,10 +189,14 @@
         
         snapshot.forEach((doc) => {
           let comment = doc.data();
+          console.log(comment.profileImg)
+          let img = comment.profileImg || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s";
+          
           let timestamp = comment.timestamp ? new Date(comment.timestamp.toDate()).toLocaleString() : "방금 전";
           
           let commentItem = `
                 <div class="border p-3 mb-2 bg-white rounded">
+                <img src="${img}" style="width: 30px; height: 30px; border-radius: 100px">
                     <strong>${comment.author}</strong>
                     <small class="text-muted">${timestamp}</small>
                     <p>${comment.content}</p>
@@ -230,9 +247,15 @@
   <div class="comment container bg-light text-dark rounded p-3">
     <form class="row g-3">
       <h4 class="mb-4">댓글 작성</h4>
-      <div class="col-md-3">
-        <label for="inputAuthor" class="form-label">작성자</label>
-        <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
+      <div class="comment_author">
+        <div>
+          <label for="inputAuthor" class="form-label">작성자</label>
+          <input type="text" class="form-control" id="inputAuthor" placeholder="이름">
+        </div>
+        <div class="comment_author__box">
+          <label for="inputprofileImg" class="form-label">프로필 사진 URL</label>
+          <input type="text" class="form-control" id="inputprofileImg" placeholder="URL">
+        </div>
       </div>
       <div class="col-12">
         <label for="inputComment" class="form-label">내용</label>
