@@ -192,12 +192,12 @@
                     const docRef = doc(db, "members", id);
                     await updateDoc(docRef, docData);
                     alert('수정 완료!');
+                    window.location.href = `page3.html?id=${id}`
                 } else {
                     await addDoc(collection(db, "members"), docData);
                     alert('추가 완료!');
+                    window.location.href = "index.html";
                 }
-                // 성공하면 메인 페이지로 이동
-                window.location.href = "index.html";
             } catch (error) {
                 console.error("오류 발생:", error);
                 alert("작업 실패");
