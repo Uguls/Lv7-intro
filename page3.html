@@ -186,7 +186,8 @@
                     author: author,
                     content: content,
                     timestamp: new Date(),
-                    password: password
+                    password: password,
+                    profileImg: profileImg // 프로필 이미지 넣기
                 })
                 alert("댓글이 작성되었습니다.");
                 $("#inputAuthor").val("");
@@ -210,10 +211,12 @@
 
                 snapshot.forEach((doc) => {
                     let reply = doc.data();
+                    let img = doc.img;
                     let id = doc.id;
                     let timestamp = reply.timestamp ? new Date(reply.timestamp.toDate()).toLocaleString() : "방금 전";
                     let replyItem = `
                     <div class="border p-2 ms-4 bg-light rounded" id="${id}">
+                        <img src="${reply.img}" style="width: 30px; height: 30px; border-radius: 100px" onerror="this.onerror=null; this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSM9V2kmxoDbx1pTAk_UONvWOR9vQFCkITkmw&s';">
                         <strong>${reply.author}</strong>
                         <small class="text-muted">${timestamp}</small>
                         <button id="replydelbtn" type="button" class="commentdelbtn">x</button>
@@ -257,6 +260,7 @@
                     <p>${comment.content}</p>
                     <button class="btn btn-sm btn-outline-secondary reply-btn" data-id="${commentId}">답글</button>
                     <div class="reply-form" id="replyForm-${commentId}" style="display: none;">
+                        <input type="text" class="form-control" id="replyImg-${commentId}" placeholder="URL">
                         <input type="text" id="replyAuthor-${commentId}" placeholder="작성자" class="form-control mb-1">
                         <input type="text" id="replyContent-${commentId}" placeholder="답글 작성" class="form-control mb-1">
                         <button class="btn btn-sm btn-secondary" id="replyBtn-${commentId}">작성</button>
@@ -362,6 +366,7 @@
 
             let author = $(`#replyAuthor-${commentId}`).val().trim();
             let content = $(`#replyContent-${commentId}`).val().trim();
+            let img = $(`#replyImg-${commentId}`).val();
 
             if (!author || !content) {
                 alert("작성자와 내용을 입력하세요.");
@@ -373,12 +378,14 @@
                     commentId: commentId,
                     author: author,
                     content: content,
-                    timestamp: new Date()
+                    timestamp: new Date(),
+                    img: img
                 });
 
                 alert("답글이 작성되었습니다.");
                 $(`#replyAuthor-${commentId}`).val("");
                 $(`#replyContent-${commentId}`).val("");
+                $(`#replyImg-${commentId}`).val("");
 
                 let replyContainer = $(`#replyContainer-${commentId}`);
                 loadReplies(commentId, replyContainer);
