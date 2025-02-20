@@ -282,7 +282,7 @@
             });
         }
 
-     
+
 
 
 
@@ -295,17 +295,6 @@
             let inputField = $(`<input type='text' class='form-control edit-input' value='${commentText}'>`);
             let saveButton = $(`<button class='btn btn-sm btn-secondary save-btn'>저장</button>`); // 여기서 btn-success를 btn-secondary로 변경
             let editButton = $(this);
-
-
-
-            //비번 생성중........
-            let newInput = document.createElement("input");
-            newInput.setAttribute("id", "pwcheck");
-            newInput.setAttribute("type", "password")
-            newInput.append(newInput)
-
-
-
 
             commentDiv.find("p").replaceWith(inputField);
             editButton.replaceWith(saveButton);
