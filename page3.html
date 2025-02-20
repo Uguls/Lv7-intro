@@ -11,6 +11,36 @@
 
 
     <style>
+         /* 기본 스타일 */
+         body { font-family: Arial, sans-serif; }
+        .modal { 
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0; top: 0; 
+            width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content { 
+            background-color: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            width: 300px; 
+            margin: 15% auto;
+            text-align: center;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        input { width: 100%; padding: 8px; margin-top: 10px; }
+        button { margin-top: 10px; padding: 10px; cursor: pointer; }
+
+
+
         .main {
             background-color: #d2e5eb;
             color: white
@@ -287,12 +317,13 @@
         }
 
 
-
-
-
-
         $(document).on("click", ".edit-btn", function () {
+
             let commentId = $(this).data("id");
+ 
+            //모달 열기
+            openModal(commentId);
+
             let commentDiv = $(this).closest(".border.p-3.mb-2.bg-white.rounded");
             let commentText = commentDiv.find("p").text();
 
@@ -430,11 +461,65 @@
             })
         })
 
+        //튜터님 피드백
+        function openModal(commentId) {
+            document.getElementById("modalCommentId").value = commentId;
+            document.getElementById("passwordModal").style.display = "block";
+        };
+
+        // 모달 닫기
+        // function closeModal() {
+        $(document).on("click", '#closeModal', async function () {
+            document.getElementById("passwordModal").style.display = "none";
+        });
+
+        // 비밀번호 제출 (예제) 일단 무시
+        // function submitPassword() {
+        $(document).on("click", '#submitPassword', async function () {
+                        
+            //해당 댓글 데이터 조회 2번
+            let id = document.getElementById("modalCommentId").value
+
+            let docSnap = await getDoc(doc(db, "comments", id));
+            let row = docSnap.data();
+
+            let password = row['password'];
+            let inputPassword = document.getElementById("passwordInput").value;
+
+            //비밀번호 비교 3번
+            if (password != inputPassword) {
+                alert("비밀번호가 일치하지 않습니다!");
+                return;
+            }
+
+            document.getElementById("passwordModal").style.display = "none";
+        });
+
+        // 모달 바깥 클릭 시 닫기
+        window.onclick = function(event) {
+            let modal = document.getElementById("passwordModal");
+            if (event.target === modal) {
+                document.getElementById("passwordModal").style.display = "none";
+            }
+        }
 
     </script>
 </head>
 
 <body class="main text-dark">
+    
+    //비번 모달
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <input type="hidden" id="modalCommentId">
+            <h2>비밀번호 입력</h2>
+            <input type="password" id="passwordInput" placeholder="비밀번호 입력">
+            <button id="submitPassword">확인</button>
+        </div>
+    </div>
+
+
     <div class="inputgroup" id="group">
     </div>
 
