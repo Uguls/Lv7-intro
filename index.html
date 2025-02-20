@@ -11,154 +11,139 @@
   <link href="https://fonts.googleapis.com/css2?family=Darumadrop+One&family=Gowun+Dodum&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
-
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
+    
     .gamja-flower-regular {
       font-family: "Gamja Flower", serif;
       font-weight: 400;
       font-style: normal;
       font-size: 53px;
     }
-
+    
     .nanum-gothic-regular {
-      font-family: "Nanum Gothic", sans-serif;
+      font-family: "Nanum Gothic", serif;
       font-weight: 400;
       font-style: normal;
       font-size: 60px;
     }
-
+    
     .darumadrop-one-regular {
-      font-family: "Darumadrop One", sans-serif;
+      font-family: "Darumadrop One", serif;
       font-weight: 400;
       font-style: normal;
       font-size: 110px;
     }
-
-    body {
-      background-image: url('png/home.png');
-      background-size: contain;
-      background-position: top;
-      background-repeat: no-repeat;
-      height: 100vh;
-      margin: 0;
+    
+    .team_intro {
       display: flex;
-      justify-content: center;
       align-items: center;
-      flex-direction: column;
+      padding: 5px;
+      margin-bottom: 30px;
+      border-radius: 20px;
     }
 
-    .container {
+    .main {
+      /*border: 1px solid black;*/
+      border-radius: 20px;
+      padding: 5px;
       display: flex;
-      width: 90%;
-      max-width: 1000px;
-      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
-    .left-section {
-      width: 25%;
-      text-align: left;
-      padding: 20px;
-    }
-
-    .left-wrapper {
-      margin-left: -300px;
-      margin-top: -350px;
-    }
-
-    .title {
-      font-size: 70px;
-      font-weight: bold;
-      font-family: "Darumadrop One", sans-serif;
-      margin-top: 250px;
-      margin-left: 20px;
-    }
-
-    .team-image {
-      width: 150%;
+    .add_btn {
+      width: fit-content;
+      height: 30px;
       border-radius: 8px;
-      margin-top: 30px;
-      margin-left: 550px;
-    }
-
-    .right-section {
-      width: 75%;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      margin-left: 100px;
-    }
-
-    .team-text {
-      font-family: "Nanum Gothic", sans-serif;
-      font-size: 30px;
-      margin-top: 550px;
-      text-align: center;
-      margin-left: 200px;
-      font-weight: bold;
-    }
-
-    .home-button {
-      font-family: "Nanum Gothic", sans-serif;
-      font-size: 25px;
-      color: #000000;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .home-button:hover {
-      text-decoration: underline;
-    }
-
-    .member-button {
-      font-family: "Nanum Gothic", sans-serif;
-      font-size: 25px;
-      color: #ffffff;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .member-button:hover {
-      text-decoration: underline;
-    }
-
-    .footer {
-      position: absolute;
-      font-size: 25px;
-      top: 180px;
-      right: 200px;
-    }
-
-    .member {
-      position: absolute;
-      font-size: 25px;
-      top: 245px;
-      right: 180px;
     }
   </style>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
+      authDomain: "lv7-introduction.firebaseapp.com",
+      projectId: "lv7-introduction",
+      storageBucket: "lv7-introduction.firebasestorage.app",
+      messagingSenderId: "722530554104",
+      appId: "1:722530554104:web:6fdfc0be407f3d0b5cab0d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    function getTeamMembers() {
+      const membersRef = collection(db, "members");
+
+      onSnapshot(membersRef, (snapshot) => {
+        $(".main").empty();
+
+        snapshot.forEach(doc => {
+          const member = doc.data();
+          const memberId = doc.id;
+
+          const memberHtml = `
+          <div class="card mb-5" id="${memberId}" style="width: 30rem; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+            <img src="${member.image}" class="card-img-top" alt="..." style="height: 30rem;">
+            <div class="card-body">
+              <h5>${member.name}</h5>
+              <p>MBTI: ${member.mbti}</p>
+              <p>장점: ${member.advantage}</p>
+              <p>협업 스타일: ${member.style}</p>
+              <a href="${member.blog}" class="btn btn-primary" role="button">블로그</a>
+            </div>
+          </div>
+          `;
+          $(".main").append(memberHtml);
+        });
+      });
+    }
+
+    $(document).on("click", ".card", function () {
+      const memberId = $(this).attr("id");
+      window.location.href = `page3.html?id=${memberId}`;
+    });
+
+    $(document).ready(function () {
+      getTeamMembers();
+    });
+  </script>
 </head>
 
-<body>
-  <div class="container">
-    <div class="left-section">
-      <div class="left-wrapper">
-        <div class="title darumadrop-one-regular">Lv.7</div>
-        <img src="png/teem.png" alt="Team Image" class="team-image">
-      </div>
+<body class="text-white" style="background-color: #d2e5eb">
+<div class="container py-5">
+  <h1 class="mb-4 text-dark darumadrop-one-regular">Lv. 7</h1>
+  <div style="display: flex; justify-content: space-between">
+    <div class="team_intro bg-white text-dark p-3" style="width: 68%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06)">
+      <p class="gamja-flower-regular">만렙 개발자가 되기 위해 달려가는 <br/>
+        뉴비 개발자들</p>
     </div>
-    <div class="team-text">
-      만렙 개발자가 되기 위해 달려가는<br>
-      뉴비 개발자들
+    <div class="team_intro bg-white text-dark p-3" style="width: 400px; height: 300px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06)">
+      <img src="img/image.webp" style="width: 370px; height: 270px; border-radius: 8px">
     </div>
   </div>
-
-  <div class="footer">
-    <a href="index.html" class="home-button">Home</a>
+<!--  <div style="display: flex; justify-content: space-between">-->
+<!--    <div class="team_intro bg-white text-dark p-3" style="width: 68%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06)">-->
+<!--      <h2>팀 소개2</h2>-->
+<!--      <p>팀 소개 작성</p>-->
+<!--    </div>-->
+<!--    <div class="team_intro bg-white text-dark p-3" style="width: 400px; height: 300px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),0 2px 4px -1px rgba(0, 0, 0, 0.06)">-->
+<!--      이미지-->
+<!--    </div>-->
+<!--  </div>-->
+  <div>
+    <p class="mt-4 text-dark nanum-gothic-regular">팀원 소개
+      <a href="create.html" class="btn btn-secondary" role="button">추가</a>
+    </p>
   </div>
-  <div class="member">
-    <a href="page3.html" class="member-button">member</a>
-  </div>
+  <div class="main bg-white text-dark p-3 d-flex" />
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
