@@ -125,6 +125,8 @@
         import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         import { getDocs, limit, getDoc, doc, deleteDoc, onSnapshot, query, where, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        
+        let ispwdCorrect = false;
 
         const firebaseConfig = {
             apiKey: "AIzaSyBkSfI6w3IrHMdelRBzkQvFos99Oqswk64",
@@ -301,7 +303,7 @@
                     commentsContainer.append(replyContainer);
 
                     loadReplies(commentId, replyContainer);  // 답글 불러오기
-
+                  
                     // 답글 폼 토글
                     document.querySelector(`.reply-btn[data-id='${commentId}']`).addEventListener('click', function () {
                         let replyForm = document.querySelector(`#replyForm-${commentId}`);
@@ -315,46 +317,53 @@
                 });
             });
         }
-
-
+        
+        
         $(document).on("click", ".edit-btn", function () {
-
-            let commentId = $(this).data("id");
- 
-            //모달 열기
-            openModal(commentId);
-
-            let commentDiv = $(this).closest(".border.p-3.mb-2.bg-white.rounded");
+          let commentId = $(this).data("id");
+          
+          openModal(commentId); // 모달 열기
+          
+          $.when($(document).on("passwordChecked", function () {
+            if (!ispwdCorrect) {
+              return;
+            }
+            
+            let commentDiv = $(`#${commentId}`);
             let commentText = commentDiv.find("p").text();
-
+            
             let inputField = $(`<input type='text' class='form-control edit-input' value='${commentText}'>`);
-            let saveButton = $(`<button class='btn btn-sm btn-secondary save-btn'>저장</button>`); // 여기서 btn-success를 btn-secondary로 변경
-            let editButton = $(this);
-
+            let saveButton = $(`<button class='btn btn-sm btn-secondary save-btn'>저장</button>`);
+            let editButton = commentDiv.find(".edit-btn");
+            
             commentDiv.find("p").replaceWith(inputField);
             editButton.replaceWith(saveButton);
-
+            
             saveButton.click(async function () {
-                let updatedText = inputField.val().trim();
-                if (!updatedText) {
-                    alert("내용을 입력해주세요.");
-                    return;
-                }
-
-                try {
-                    await updateDoc(doc(db, "comments", commentId), {
-                        content: updatedText
-                    });
-
-                    let commentContent = $(`<p class='comment-content'>${updatedText}</p>`);
-                    inputField.replaceWith(commentContent);
-                    saveButton.replaceWith(editButton);
-                } catch (error) {
-                    console.error("댓글 수정 실패:", error);
-                    alert("댓글 수정 중 오류가 발생했습니다.");
-                }
+              let updatedText = inputField.val().trim();
+              if (!updatedText) {
+                alert("내용을 입력해주세요.");
+                return;
+              }
+              
+              try {
+                await updateDoc(doc(db, "comments", commentId), {
+                  content: updatedText
+                });
+                
+                let commentContent = $(`<p class='comment-content'>${updatedText}</p>`);
+                inputField.replaceWith(commentContent);
+                saveButton.replaceWith(editButton);
+              } catch (error) {
+                console.error("댓글 수정 실패:", error);
+                alert("댓글 수정 중 오류가 발생했습니다.");
+              }
             });
+          })).then(function () {
+            console.log("수정 가능");
+          });
         });
+
 
         $(document).on("click", ".edit-reply-btn", function () {
             let replyId = $(this).data("id");
@@ -389,7 +398,6 @@
                 }
             });
         });
-
 
         async function addReply(commentId) {
             const urlParams = new URL(location.href).searchParams;
@@ -463,6 +471,7 @@
 
         //튜터님 피드백
         function openModal(commentId) {
+            ispwdCorrect = false;
             document.getElementById("modalCommentId").value = commentId;
             document.getElementById("passwordModal").style.display = "block";
         };
@@ -475,26 +484,27 @@
 
         // 비밀번호 제출 (예제) 일단 무시
         // function submitPassword() {
-        $(document).on("click", '#submitPassword', async function () {
-                        
-            //해당 댓글 데이터 조회 2번
-            let id = document.getElementById("modalCommentId").value
-
-            let docSnap = await getDoc(doc(db, "comments", id));
-            let row = docSnap.data();
-
-            let password = row['password'];
-            let inputPassword = document.getElementById("passwordInput").value;
-
-            //비밀번호 비교 3번
-            if (password != inputPassword) {
-                alert("비밀번호가 일치하지 않습니다!");
-                return;
-            }
-
-            document.getElementById("passwordModal").style.display = "none";
+        $(document).on("click", "#submitPassword", async function () {
+          let id = document.getElementById("modalCommentId").value;
+          let inputPassword = document.getElementById("passwordInput").value;
+          
+          let docSnap = await getDoc(doc(db, "comments", id));
+          let row = docSnap.data();
+          let password = row['password'];
+          
+          if (password !== inputPassword) {
+            alert("비밀번호가 일치하지 않습니다!");
+            ispwdCorrect = false;
+            return;
+          }
+          
+          document.getElementById("passwordModal").style.display = "none";
+          ispwdCorrect = true;
+          
+          $(document).trigger("passwordChecked");
         });
-
+        
+        
         // 모달 바깥 클릭 시 닫기
         window.onclick = function(event) {
             let modal = document.getElementById("passwordModal");
