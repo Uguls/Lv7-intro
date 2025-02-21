@@ -189,8 +189,8 @@
             // 데이터 추가 또는 수정
             try {
                 if (id) {
-                    const docRef = doc(db, "members", id);
-                    await updateDoc(docRef, docData);
+                    // const docRef = doc(db, "members", id);
+                    // await updateDoc(docRef, docData);
                     alert('수정 완료!');
                     window.location.href = `page3.html?id=${id}`
                 } else {
